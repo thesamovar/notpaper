@@ -1,0 +1,41 @@
+body {
+    /* font-size: 200%; */
+    margin: 0px;
+    padding: 0px;
+}
+
+.column {
+    float: left;
+    width: 25%;
+    overflow-y: auto;
+    height: 100vh;
+    /* background-color: lightgrey; */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  /* .column div { */
+      /* background-color: #ffffdd; */
+  /* } */
+
+  .column h1 {
+      font-size: 100%;
+      /* font-variant: small-caps; */
+      text-transform: uppercase;
+      border-bottom: 1px solid black;
+  }
+
+  .related {
+      display: none;
+  }
+
+  #movable {
+      background-color: lightgreen;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
