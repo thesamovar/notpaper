@@ -1,0 +1,639 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Nicolas Perez-Nieves^{1\ast}, Vincent C. H. Leung^{1}, Pier Luigi Dragotti^{1}, Dan F. M. Goodman^{1}  ^{1}Department of Electrical and Electronic Engineering, Imperial College London, UK  ^\astTo whom correspondence should be addressed; E-mail: nicolas.perez14@imperial.ac.uk" />
+  <title>Neural heterogeneity promotes robust learning</title>  
+
+  <link rel="stylesheet" href="threecolumnfixed.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<body>
+        
+    <div class="row">
+        <div class="column_container">
+            <div class="column_header">
+                <b>MAIN CONTENT</b><br/>
+                &nbsp;
+            </div>
+            <div id="colMain" class="column">
+                                <header id="title-block-header">
+                <h1 class="title">Neural heterogeneity promotes robust learning</h1>
+                                                <p class="author">Nicolas Perez-Nieves<span class="math inline">\(^{1\ast}\)</span>, Vincent C. H. Leung<span class="math inline">\(^{1}\)</span>, Pier Luigi Dragotti<span class="math inline">\(^{1}\)</span>, Dan F. M. Goodman<span class="math inline">\(^{1}\)</span><br />
+<br />
+<span><span class="math inline">\(^{1}\)</span>Department of Electrical and Electronic Engineering, Imperial College London, UK</span><br />
+<br />
+<span><span class="math inline">\(^\ast\)</span>To whom correspondence should be addressed; E-mail: nicolas.perez14@imperial.ac.uk</span></p>
+                                                </header>
+                                                <div id="abstract">
+                    <b>Abstract.</b><br/>
+                    <p>The brain has a hugely diverse, heterogeneous structure. Whether or not heterogeneity at the neural level plays a functional role remains unclear, and has been relatively little explored in models which are often highly homogeneous. We compared the performance of spiking neural networks trained to carry out tasks of real-world difficulty, with varying degrees of heterogeneity, and found that it substantially improved task performance. Learning was more stable and robust, particularly for tasks with a rich temporal structure. In addition, the distribution of neuronal parameters in the trained networks closely matches those observed experimentally. We suggest that the heterogeneity observed in the brain may be more than just the byproduct of noisy processes, but rather may serve an active and important role in allowing animals to learn in changing environments.</p>
+                </div>
+                                                <p><strong>Summary.</strong> Neural heterogeneity is metabolically efficient for learning, and optimal parameter distribution matches experimental data.</p>
+                                                <h1 class="unnumbered" id="secintrointroduction"><span id="sec:intro" label="sec:intro">[sec:intro]</span>Introduction</h1>
+                                                <p>The brain is known to be deeply heterogeneous at all scales <span class="citation" data-cites="Koch96">(Koch and Laurent 1999)</span>, but it is still not known whether this heterogeneity plays an important functional role or if it is just a byproduct of noisy developmental processes and contingent evolutionary history. A number of hypothetical roles have been suggested (reviewed in <span class="citation" data-cites="Gjorgjieva2016">(Gjorgjieva, Drion, and Marder 2016)</span>), in efficient coding <span class="citation" data-cites="Shamir2006 Chelaru2008 Osborne2008 Marsat2010 Padmanabhan2010 hunsberger2014competing Zeldenrust2019">(Shamir and Sompolinsky 2006; Chelaru and Dragoi 2008; Osborne et al. 2008; Marsat and Maler 2010; Padmanabhan and Urban 2010; Hunsberger, Scott, and Eliasmith 2014; Zeldenrust, Gutkin, and Denéve 2019)</span>, reliability <span class="citation" data-cites="Lengler2013">(Lengler 2013)</span>, working memory <span class="citation" data-cites="Kilpatrick2013">(Kilpatrick, Ermentrout, and Doiron 2013)</span>, and functional specialisation <span class="citation" data-cites="duarte2019leveraging">(Duarte and Morrison 2019)</span>. However, previous studies have largely used simplified tasks or networks, and it remains unknown whether or not heterogeneity can help animals solve complex information processing tasks in natural environments. Recent work has allowed us, for the first time, to train biologically realistic spiking neural networks to carry out these tasks at a high level of performance, using methods derived from machine learning. We used two different learning models <span class="citation" data-cites="Nicola2017 Zenke2019">(Nicola and Clopath 2017; Neftci, Mostafa, and Zenke 2019)</span> to investigate the effect of introducing heterogeneity in the time scales of neurons when performing tasks with realistic and complex temporal structure. We found that it improves overall performance, makes learning more stable and robust, and learns neural parameter distributions that match experimental observations, suggesting that the heterogeneity observed in the brain may be a vital component to its ability to adapt to new environments.</p>
+                                                <h1 class="unnumbered" id="secresultsresults"><span id="sec:results" label="sec:results">[sec:results]</span>Results</h1>
+                                                <h2 class="unnumbered" id="secresults-acctime-scale-heterogeneity-improves-learning-on-tasks-with-rich-temporal-structure"><span id="sec:results-acc" label="sec:results-acc">[sec:results-acc]</span>Time scale heterogeneity improves learning on tasks with rich temporal structure</h2>
+                                                <p>We investigated the role of neural heterogeneity in task performance by training recurrent spiking neural networks to classify visual and auditory stimuli with varying degrees of temporal structure. The model used three layers of spiking neurons: an input layer, a recurrently connected layer, and a readout layer used to generate predictions (<a href="#fig:architecture" data-reference-type="ref" data-reference="fig:architecture">1</a>A), a widely used minimal architecture (e.g. <span class="citation" data-cites="Maass2002 Zenke2019">Maass, Natschläger, and Markram (2002; Neftci, Mostafa, and Zenke 2019)</span>). Heterogeneity was introduced by giving each neuron an individual membrane and synaptic time constant. We compared four different conditions: initial values could be either homogeneous or heterogeneous, and training could be either standard or heterogeneous (<a href="#fig:architecture" data-reference-type="ref" data-reference="fig:architecture">1</a>B). Time constants were either initialised with a single value (homogeneous initialisation), or randomly according to a gamma distribution (heterogeneous). The models were trained using surrogate gradient descent <span class="citation" data-cites="Zenke2019">(Neftci, Mostafa, and Zenke 2019)</span>. Synaptic weights were always plastic, while time constants were either held fixed at their initial values in the standard training regime, or could be modified in the heterogeneous training regime.</p>
+                                                <figure>
+                                                <embed src="figures/Architecture.pdf" id="fig:architecture" style="width:80.0%" /><figcaption aria-hidden="true"><strong>Diagram of network architecture and training configurations.</strong> <strong>A.</strong> Model architecture. A layer of input neurons emits spike trains into a recurrently connected layer of spiking neurons which is followed by a readout layer. <strong>B.</strong> Configurations. Training can be either standard (only the synaptic weights are learned) or heterogeneous (the synaptic weights and membrane and synaptic time constants are learned). The initialisation can be homogeneous (all synaptic and membrane time constants are initialised to the same value) or heterogeneous (synaptic and membrane time constants are randomly initialised for each neuron by sampling them from a given probability distribution). </figcaption>
+                                                </figure>
+                                                <p>We used five different datasets with varying degrees of temporal structure. Neuromorphic MNIST (N-MNIST; <span class="citation" data-cites="Orchard2015">Orchard et al. (2015)</span>), Fashion-MNIST (F-MNIST; <span class="citation" data-cites="fashion-mnist">Xiao, Rasul, and Vollgraf (2017)</span>, and the DVS128 Gesture dataset <span class="citation" data-cites="amir2017low">(Amir et al. 2017)</span> feature visual stimuli, while the Spiking Heidelberg Digits (SHD) and Spiking Speech Commands (SSC) datasets <span class="citation" data-cites="Cramer2020">(Cramer et al. 2020)</span> are auditory. N-MNIST and DVS128 use a neuromorphic vision sensor to generate spiking activity, by moving the sensor with a static visual image of handwritten digits (N-MNIST) or by recording humans making hand gestures (DVS128). F-MNIST is a dataset of static images that is widely used in machine learning, which we converted into spike times by treating the image intensities as input currents to model neurons, so that higher intensity pixels would lead to earlier spikes, and lower intensity to later spikes. Both SHD and SSC use a detailed model of the activity of bushy cells in the cochlear nucleus, in response to spoken digits (SHD) or commands (SSC). Of these datasets, N-MNIST and F-MNIST have minimal temporal structure, as they are generated from static images. DVS128 has some temporal structure as it is recorded motion, but it is possible to perform well at this task by discarding the temporal information. The auditory tasks SHD and SSC by contrast have very rich temporal structure.</p>
+                                                <p>We found that heterogeneity in time constants had a profound impact on performance on those training datasets where information was encoded in the precise timing of input spikes (<a href="#table:surr_results" data-reference-type="ref" data-reference="table:surr_results">1</a>, <a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>A). On the most temporally complex auditory tasks, accuracy improved by a factor of around 15-20%, while for the least temporally complex task N-MNIST we saw no improvement at all. For the gesture dataset DVS128 we can identify the source of the (intermediate) improvement as the heterogeneous models being better able to distinguish between spatially similar but temporally different gestures, such as clockwise and anticlockwise versions of the same gesture (See Supp. <a href="#fig:dvs_results" data-reference-type="ref" data-reference="fig:dvs_results">6</a>A-B). This suggests that we might see greater improvements for a richer version of this dataset in which temporal structure was more important.</p>
+                                                <div id="table:surr_results">
+                                                <table>
+                                                <caption><strong>Testing accuracy percentage over different datasets and training methods</strong> Effect of initialisation and training configuration on performance, on datasets of increasing temporal complexity. Initialisation can be homogeneous (all time constants the same) or heterogeneous (random initialisation), and training can be standard (only synaptic weights learned) or heterogeneous (time constants can also be learned). N-MNIST and F-MNIST are static image datasets with little temporal structure, DVS128 is video gestures, and SHD and SSC are temporally complex auditory datasets.</caption>
+                                                <thead>
+                                                <tr class="header">
+                                                <th style="text-align: left;">Initialisation</th>
+                                                <th style="text-align: left;">Training</th>
+                                                <th style="text-align: left;"><strong>N-MNIST</strong></th>
+                                                <th style="text-align: left;"><strong>F-MNIST</strong></th>
+                                                <th style="text-align: left;"><strong>DVS128</strong></th>
+                                                <th style="text-align: left;"><strong>SHD</strong></th>
+                                                <th style="text-align: left;"><strong>SSC</strong></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="odd">
+                                                <td style="text-align: left;">Homog.</td>
+                                                <td style="text-align: left;">Standard</td>
+                                                <td style="text-align: left;"><span class="math inline">\(97.4 \!\pm\! 0.0\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(80.1 \!\pm\! 7.4\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(76.9 \!\pm\! 0.8\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(71.7 \!\pm\! 1.0\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(49.7 \!\pm\! 0.4\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;">Heterog.</td>
+                                                <td style="text-align: left;">Standard</td>
+                                                <td style="text-align: left;"><span class="math inline">\(97.5 \!\pm\! 0.0\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(87.9 \!\pm\! 0.1\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(79.5 \!\pm\! 1.0\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(73.7 \!\pm\! 1.1\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(53.7 \!\pm\!  0.7\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;">Homog</td>
+                                                <td style="text-align: left;">Heterog.</td>
+                                                <td style="text-align: left;"><span class="math inline">\(96.6 \!\pm\! 0.2\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(79.7 \!\pm\! 7.4\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(81.2 \!\pm\! 0.8\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(82.7 \!\pm\! 0.8\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(56.6 \!\pm\!  0.7\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;">Heterog.</td>
+                                                <td style="text-align: left;">Heterog.</td>
+                                                <td style="text-align: left;"><span class="math inline">\(97.3 \!\pm\! 0.1\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(87.5 \!\pm\! 0.1\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(82.1 \!\pm\! 0.8\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(81.7 \!\pm\! 0.8\)</span></td>
+                                                <td style="text-align: left;"><span class="math inline">\(60.1 \!\pm\! 0.7\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: right;" colspan="2">Chance level</td>
+                                                <td style="text-align: left;">10.0</td>
+                                                <td style="text-align: left;">10.0</td>
+                                                <td style="text-align: left;">10.0</td>
+                                                <td style="text-align: left;">5.0</td>
+                                                <td style="text-align: left;">2.9</td>
+                                                </tr>
+                                                </tbody>
+                                                </table>
+                                                </div>
+                                                <figure>
+                                                <embed src="figures/Fig2_Nature.pdf" id="fig:training-curves-membrane" /><figcaption aria-hidden="true"> <strong>Impact of training configuration and temporal structure of the dataset on the testing accuracy, membrane time constant distributions and performance when training at different time scales.</strong> <strong>A.</strong> Improvements in accuracy in testing data, for datasets with temporal complexity low (N-MNIST, F-MNIST), intermediate (DVS) and high (SHD). Shaded areas correspond to standard error in the mean over 10 trials. Initialisation can be homogeneous (blue/green) or heterogeneous (orange/red), and training can be standard, weights only (blue/orange) or heterogeneous including time constants (green/red). Heterogeneous configurations achieve a better test accuracy on the more temporally complex datasets. Heterogeneous initialisation also results in a more stable and robust training trajectory for F-MNIST, leading to better performance overall. <strong>B.</strong> Membrane time constant distributions before (left) and after (right) training for each dataset. Histograms above the axis represent heterogeneous initialisation, and below the axis homogeneous initialisation. In the case of standard training (weights only), the initial distribution (left) is the same as the final distribution of time constants after training. <strong>C.</strong> Experimentally observed distributions of time constants for (top to bottom): mouse cochlear nucleus, multiple cell types (172 cells); mouse V1 layer 4, spiny (putatively excitatory) cells (164 cells); human middle temporal gyrus, spiny cells (236 cells). <strong>D.</strong> Raster plot on input spikes from a single sample of the SHD dataset (spoken digits) at three different time scales. <strong>E.</strong> Accuracy on the SHD dataset after training on a variety of time scales (randomly selected from the grey distribution) for the four configurations described in (A). <strong>F.</strong> Accuracy on the SHD dataset when the initial distribution of time constants is tuned for time scale 1.0, but the training and testing is done at different time scales.</figcaption>
+                                                </figure>
+                                                <p>We verified that our results were due to heterogeneity and not simply to a better tuning of time constants in two ways. Firstly, we performed a grid search across all homogeneous time constants for the SHD dataset and used the best values for our comparison. Secondly, we observe that the distribution of time constants after training is very similar and heterogeneous regardless of whether it was initialised with a homogeneous or heterogeneous distribution (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>B), indicating that the heterogeneous distribution is optimal.</p>
+                                                <p>Introducing heterogeneity allows for a large increase in performance at the cost of only a very small increase in the number of parameters (0.23% for SHD, because the vast majority of parameters are synaptic weights), and without using any additional neurons or synapses. Heterogeneity is therefore a metabolically efficient strategy. It is also a computationally efficient strategy of interest to neuromorphic computing, because adding heterogeneity adds <span class="math inline">\(O(n)\)</span> to memory use and computation time, while adding more neurons adds <span class="math inline">\(O(n^2)\)</span>. Further, in some neuromorphic systems like BrainScaleS this heterogeneity is already present as part of the manufacturing process <span class="citation" data-cites="Schmitt2017">(Schmitt et al. 2017)</span>.</p>
+                                                <p>Note that it is possible to obtain better performance using a larger number of neurons. For example, <span class="citation" data-cites="Zenke2019">Neftci, Mostafa, and Zenke (2019)</span> obtained a performance of 83.2% on the SHD dataset without heterogeneity using 1024 neurons and data augmentation techniques, whereas we obtained 82.7% using 128 neurons and no data augmentation. We focus on smaller networks here for two reasons. Firstly, we wanted to systematically investigate the effect of different training regimes, and current limitations of surrogate gradient descent mean that each training session takes several days. Secondly, with larger numbers of neurons, performance even without heterogeneity approaches the ceiling on these tasks (which are still simple in comparison to those faced by animals in real environments), making it more difficult to see the effect of different architectures. Even with this limitation to small networks, heterogeneity confers such an advantage that our results for the SSC dataset are state of the art (for spiking neural networks) by a large margin.</p>
+                                                <p>We also tested the effect of introducing heterogeneity of other neuron parameters, such as the firing threshold and reset potential, but found that it made no appreciable difference. This was because for our model, changing these is almost equivalent to a simple scaling of the membrane potential variable. By contrast, <span class="citation" data-cites="Maass2019reinf">Bellec et al. (2019)</span> found that introducing an adaptive threshold did improve performance, presumably because it allows for much richer temporal dynamics.</p>
+                                                <h2 class="unnumbered" id="sectime-constantspredicted-time-constant-distributions-match-experimental-data"><span id="sec:time-constants" label="sec:time-constants">[sec:time-constants]</span>Predicted time constant distributions match experimental data</h2>
+                                                <p>In all our tasks, the distribution of time constants after training approximately but not exactly fit a log normal or gamma distribution (with different parameters for each task), and are consistent across different training runs (Supplementary Materials <a href="#fig:all_taum_dist" data-reference-type="ref" data-reference="fig:all_taum_dist">4</a> and <a href="#fig:all_taus_dist" data-reference-type="ref" data-reference="fig:all_taus_dist">5</a>), suggesting that the learned distributions may be optimal. Using publicly available datasets including time constants recorded in large numbers of neurons in different animals and brain regions <span class="citation" data-cites="Manis2019 manis_kasten_xie_2019 Lein2007 Hawrylycz2012">(P. B. Manis, Kasten, and Xie 2019; P. Manis, Kasten, and Xie 2019; Lein et al. 2007; Hawrylycz et al. 2012)</span>, we found very similar distributions to those we predicted (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>C). The parameters for these distributions are different for each animal and region, just as for different tasks in our simulations. Interestingly, the distribution parameters are also different for each cell type in the experimental data, a feature not replicated in our simulations as all cells are identical. This suggests that introducing further diversity in terms of different cell types may lead to even better performance.</p>
+                                                <h2 class="unnumbered" id="secresults-robust-timeheterogeneity-improves-speech-learning-across-time-scales"><span id="sec:results-robust-time" label="sec:results-robust-time">[sec:results-robust-time]</span>Heterogeneity improves speech learning across time scales</h2>
+                                                <p>Sensory signals such as speech and motion can be recognised across a range of speeds. We tested the role of heterogeneity in learning a circuit that can function across a wide range of speeds. We augmented the SHD spoken digits datasets to include faster or slower versions of the samples, multiplying all spike times by a temporal scale as an extremely simplified model that captures a part of the difficulty of this task (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>D). During training, temporal scales were randomly selected from a distribution roughly matching human syllabic rate distributions <span class="citation" data-cites="temporal_data">(Lerner et al. 2014)</span>. The heterogeneous configurations performed as well or better at all time scales (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>E), and in particular were able to generalise better to time scales outside the training distribution (e.g. accuracy of 47% close to a time scale of 4, around 7% higher than the homogeneous network, where chance performance would be 5%). Heterogeneous initialisation alone was sufficient to achieve this better generalisation performance, while fine tuning the distribution of time constants with heterogeneous training improved the peak performance but gave no additional ability to generalise.</p>
+                                                <p><span id="sec:results-timescale" label="sec:results-timescale">[sec:results-timescale]</span></p>
+                                                <h2 class="unnumbered" id="secresults-robust-hyperheterogeneity-improves-robustness-against-mistuned-learning"><span id="sec:results-robust-hyper" label="sec:results-robust-hyper">[sec:results-robust-hyper]</span>Heterogeneity improves robustness against mistuned learning</h2>
+                                                <p>We tested the hypothesis that heterogeneity can provide robustness with two experiments where the <em>hyperparameters</em> were mistuned, that is where the initial distributions and learning parameters were chosen to give the best performance for one distribution, but the actual training and testing is done on a different distribution.</p>
+                                                <p>In the first experiment, we took the augmented SHD spoken digits dataset from the previous section, selected the hyperparameters to give the best performance at a time scale of 1, but then trained and tested the network at a different time scale (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>F). We used training of weights only, since allowing retraining of time constants lets the network cancel out the effect of changing the time scale. With a homogeneous or narrow heterogeneous initial distribution, performance falls off for time scales far from the optimal one, particularly for larger time scales (slower stimuli). However, a wide heterogeneous initial distribution allows for good performance across all time scales tested, at the cost of slightly lower peak performance at the best time scale. We tested whether or not this was solely due to the presence of a few neurons with long time constants by introducing an intermediate distribution where the majority of time constants were the same as the homogeneous case, with a small minority of much longer time constants. The performance of this distribution was intermediate between the homogeneous and heterogeneous distributions, a pattern that is repeated in our second experiment below.</p>
+                                                <p>In the second experiment, we switched to a very different learning paradigm, FORCE training of spiking neural networks <span class="citation" data-cites="Nicola2017">(Nicola and Clopath 2017)</span> to replay a learned signal, in this case a recording of a zebra finch call (<a href="#fig:force" data-reference-type="ref" data-reference="fig:force">3</a>A; from <span class="citation" data-cites="spectrogram">Blättler and Hahnloser (2011)</span>). This method does not allow for heterogeneous training (tuning time constants), so we only tested the role of untrained heterogeneous neuron parameters. We tested three configurations: fully homogeneous (single 20ms time constant as in the original paper); intermediate (each neuron randomly assigned a fixed fast 20ms or slow 100ms time constant); or fully heterogeneous (each neuron randomly assigned a time constant drawn from a gamma distribution).</p>
+                                                <p><span class="citation" data-cites="Nicola2017">Nicola and Clopath (2017)</span> showed that network performance is highly dependent on two hyperparameters (<span class="math inline">\(G\)</span> and <span class="math inline">\(Q\)</span> in their paper). We therefore tuned these hyperparameters for a network of a fixed size (<span class="math inline">\(N\!=\!1000\)</span> neurons) and ran the training and testing for networks of different sizes (<a href="#fig:force" data-reference-type="ref" data-reference="fig:force">3</a>B). As the network size started to diverge, the homogeneous network began to make large errors, while the fully heterogeneous network was able to give low errors for all network sizes. The intermediate network was able to function well across a wider range of network sizes than the fully homogeneous network, but still eventually failed for the largest network sizes. At these large network sizes, the homogeneous network becomes saturated, leading to poor performance (<a href="#fig:force" data-reference-type="ref" data-reference="fig:force">3</a>C). The robustness of the heterogeneous version of the network can be measured by the area of the hyperparameter space that leads to good performance (<a href="#fig:force" data-reference-type="ref" data-reference="fig:force">3</a>D). Adding partial or full heterogeneity leads to an improvement in learning for all points in the hyperparameter space. again suggesting that it can improve robustness of learning in a wide range of situations.</p>
+                                                <figure>
+                                                <embed src="figures/P3_FORCE_mod_labels.pdf" id="fig:force" /><figcaption aria-hidden="true"><strong>Robustness to learning hyperparameter mistuning.</strong> <strong>A.</strong> Spectrogram of a zebra finch. The network has to learn to reproduce this spectrogram, chosen for its spectrotemporal complexity. <strong>B</strong> Error for three networks at different network sizes (hyperparameters were chosen to optimise performance at <span class="math inline">\(N=1000\)</span> neurons). Networks are fully homogeneous (<em>Homog</em>); intermediate, where each neuron is randomly assigned slow or fast dynamics (<em>Double</em>); or fully heterogeneous, where each neuron has a random time constant drawn from a gamma distribution (<em>Gamma</em>). <strong>C</strong>. Raster plots of <span class="math inline">\(50\)</span> neurons randomly chosen, and reconstructed spectrograms under fully homogeneous and fully heterogeneous (Gamma) conditions for <span class="math inline">\(N=4000\)</span> neurons as indicated in (B). <strong>D</strong>. Reconstruction error. Each row is one of the conditions in (B). Each column is a network size. The axes of each image give the learning hyperparameters (<span class="math inline">\(G\)</span> and <span class="math inline">\(Q\)</span>). Grey pixels correspond to log mean square error above 0, corresponding to a complete failure to reconstruct the spectrogram. The larger the coloured region, the more robust the network is, and the less tuning is required. </figcaption>
+                                                </figure>
+                                                <h1 class="unnumbered" id="secdiscussiondiscussion"><span id="sec:discussion" label="sec:discussion">[sec:discussion]</span>Discussion</h1>
+                                                <p>We trained spiking neural networks at difficult classification tasks, either forcing all time constants to be the same (homogeneous) or allowing them to be different (heterogeneous). We found that introducing heterogeneity improved overall performance across a range of tasks and training methods, but particularly so on tasks with richer intrinsic temporal structure. Learning was more robust, in that the networks were able to learn across a range of different environments, and when the hyperparameters of learning were mistuned. When the learning rule was allowed to tune the time constants as well as synaptic weights, a consistent distribution of time constants was found, akin to a log normal or gamma distribution, and this qualitatively matched time constants measured in experimental data. Note that we do not claim that the nervous system tunes time constants during its lifetime to optimise task performance, we only use our methods to find the optimal distribution of time constants.</p>
+                                                <p>We conclude from this that neural heterogeneity is a metabolically efficient strategy for the brain. Heterogeneous networks have no additional cost in terms of the number of neurons or synapses, and perform as well as homogeneous networks which have an order of magnitude more neurons. This gain also extends to neuromorphic computing systems, as adding heterogeneity to the neuron model adds an additional time and memory cost of only <span class="math inline">\(O(n)\)</span>, while adding more neurons has a cost of <span class="math inline">\(O(n^2)\)</span>. In addition to their overall performance being better, heterogeneous networks are more robust and able to learn across a wider range of environments, which is clearly ethologically advantageous. Again, this has a corresponding benefit to neuromorphic computing and potentially machine learning more generally, in that it reduces the cost of hyperparameter tuning, which is often one of the largest costs for developing these models.</p>
+                                                <p>The question remains as to the extent of time constant tuning in real nervous systems. It could be the case that the heterogeneous distribution of time constants observed in different animals and brain regions (<a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>C) is simply a product of noisy developmental processes. This may be so, but our results show that these distributions closely match the optimal ones found by simulation which confer a substantial computational advantage, and it therefore seems likely that the brain makes use of this advantage. We found that any degree of heterogeneity improves performance, but that the best performance could be found by tuning the distribution of time constants to match the task. Without a more detailed model of these specific brain regions and the tasks they solve, it is difficult to conclude whether or not the precise distributions observed are tuned to those tasks or not, and indeed having a less precisely tuned distribution may lead to greater robustness in uncertain environments.</p>
+                                                <p>A number of studies have used heterogeneous or tunable time constants <span class="citation" data-cites="Fang2020 Quax2020 Yin2020">(Fang et al. 2020; Quax, D’Asaro, and Gerven 2020; Yin, Corradi, and Bohté 2020)</span>, but these have generally been focussed on maximising performance for neuromorphic applications, and not considering the potential role in real nervous systems. In particular, we have shown that: heterogeneity is particularly important for the type of temporally complex tasks faced in real environments, as compared to the static ones often considered in machine learning; heterogeneity confers robustness allowing for learning in a wide range of environments; optimal distributions of time constants are consistent across training runs and match experimental data; and that our results are not specific to a particular task or training method.</p>
+                                                <p>The methods used here are very computationally demanding, and this has limited us to investigating very small networks (hundreds of neurons). Indeed, we estimate that in the preparation of this paper we used approximately 2 years of GPU computing. Finding new algorithms to allow us to scale these methods to larger networks will be a critical task for the field.</p>
+                                                <p>Beyond this, it would be interesting to see to what extent different forms of heterogeneity confer other advantages, such as spatial heterogeneity as well as temporal. We observed that in the brain, different cell types have different stereotyped distributions of time constants, and it would be interesting to extend our methods to networks with multiple cell types, including more biophysically detailed cell models.</p>
+                                                <p>Our computational results show a compelling advantage for heterogeneity, and this makes intuitive sense. Having heterogeneous time constants in a layer allows the network to integrate incoming spikes at different time scales, corresponding to shorter or longer memory trace, thus allowing the readout layer to capture information at several scales and represent a richer set of functions. It would be very valuable to extend this line of thought and find a rigorous theoretical explanation of the advantage of heterogeneity.</p>
+                                                <h1 class="unnumbered" id="code-availability">Code availability</h1>
+                                                <p>The code will be publicly available after publication in a public github repository. <a href="https://github.com/npvoid/neural_heterogeneity">https://github.com/npvoid/neural_heterogeneity</a></p>
+                                                <h1 class="unnumbered" id="data-availability">Data availability</h1>
+                                                <p>All datasets used in this work can be publicly accessed in the following links:</p>
+                                                <h3 class="unnumbered" id="spiking-datasets">Spiking datasets</h3>
+                                                <ul>
+                                                <li><p>N-MNIST: <a href="https://www.garrickorchard.com/datasets/n-mnist">https://www.garrickorchard.com/datasets/n-mnist</a></p></li>
+                                                <li><p>Fashion-MNIST: <a href="https://github.com/zalandoresearch/fashion-mnist">https://github.com/zalandoresearch/fashion-mnist</a></p></li>
+                                                <li><p>DVS Gesture: <a href="https://www.research.ibm.com/dvsgesture">https://www.research.ibm.com/dvsgesture</a></p></li>
+                                                <li><p>Heidelberg Spiking Datasets (SHD and SSC):<br />
+                                                <a href="https://compneuro.net/posts/2019-spiking-heidelberg-digits">https://compneuro.net/posts/2019-spiking-heidelberg-digits</a></p></li>
+                                                </ul>
+                                                <h3 class="unnumbered" id="neural-data">Neural data</h3>
+                                                <ul>
+                                                <li><p>Allen Atlas: <a href="https://allensdk.readthedocs.io/en/latest">https://allensdk.readthedocs.io/en/latest</a></p></li>
+                                                <li><p>Paul Manis dataset: <a href="https://figshare.com/articles/dataset/Raw_voltage_and_current_traces_for_current-voltage_IV_relationships_for_cochlear_nucleus_neurons_/8854352">https://figshare.com/articles/dataset/Raw_voltage_and_current_traces_for_current-voltage_IV_relationships_for_cochlear_nucleus_neurons_/8854352</a></p></li>
+                                                </ul>
+                                                <h3 class="unnumbered" id="audio-files">Audio files</h3>
+                                                <ul>
+                                                <li><p>Zebra Finch bird song: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3192758/bin/pone.0025506.s002.wav">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3192758/bin/pone.0025506.s002.wav</a></p></li>
+                                                </ul>
+                                                <h1 class="unnumbered" id="competing-interests-declaration">Competing Interests Declaration</h1>
+                                                <p>We declare that none of the authors have competing financial or non-financial interests as defined by Nature Research.</p>
+                                                <h1 class="unnumbered" id="acknowledgments">Acknowledgments</h1>
+                                                <p>We are immensely grateful to the Allen Institute and Paul Manis for publicly sharing their databases that allowed us to estimate time constant distributions in the brain. Releasing this data is not only immensely generous and essential for this work, but more generally it accelerates the pace of science and represents an optimistic vision of the future.</p>
+                                                <h1 id="secmethodsmaterials-and-methods"><span id="sec:methods" label="sec:methods">[sec:methods]</span>Materials and Methods</h1>
+                                                <h2 id="neuron-and-synaptic-models">Neuron and synaptic models</h2>
+                                                <p>We use the Leaky Integrate and Fire (LIF) neuron model in all our simulations. In this model the membrane potential of the <span class="math inline">\(i\)</span>-th neuron in the <span class="math inline">\(l\)</span>-th layer <span class="math inline">\(U_i^{(l)}(t)\)</span> varies over time following <a href="#eq:mem" data-reference-type="eqref" data-reference="eq:mem">[eq:mem]</a>.</p>
+                                                <p><span class="math display">\[\label{eq:mem}
+                                                    \tau_m \dot{U}_i^{(l)} = -(U_i^{(l)}-U_{0}) + I_i^{(l)}\]</span></p>
+                                                <p>Here, <span class="math inline">\(\tau_m\)</span> is the membrane time constant, <span class="math inline">\(U_{0}\)</span> is the resting potential and <span class="math inline">\(I_i^{(l)}\)</span> is the input current. When the membrane potential reaches the threshold value <span class="math inline">\(U_{th}\)</span> a spike is emitted, <span class="math inline">\(U_i(t)\)</span> resets to the reset potential <span class="math inline">\(U_{r}\)</span> and then enters a refractory period that lasts <span class="math inline">\(t_{ref}\)</span> seconds where the neuron cannot spike.</p>
+                                                <p>Spikes emitted by the <span class="math inline">\(j\)</span>-th neuron in layer <span class="math inline">\(l\!-\!1\)</span> at a finite set of times <span class="math inline">\(\{t_j^{(k)}\}\)</span> can be formalised as a spike train <span class="math inline">\(S_j^{(l)}(t)\)</span> defined as in <a href="#eq:spiketrain" data-reference-type="eqref" data-reference="eq:spiketrain">[eq:spiketrain]</a></p>
+                                                <p><span class="math display">\[\label{eq:spiketrain}
+                                                    S_j^{(l-1)}(t) = \sum_k \delta(t-t_j^{(k)})\]</span></p>
+                                                <p>The input current <span class="math inline">\(I_i^{(l)}\)</span> is obtained from the spike trains of all presynaptic neurons <span class="math inline">\(j\)</span> connected to neuron <span class="math inline">\(i\)</span> following <a href="#eq:syn" data-reference-type="eqref" data-reference="eq:syn">[eq:syn]</a></p>
+                                                <p><span class="math display">\[\label{eq:syn}
+                                                    \tau_{s}\dot{I}_i^{(l)} = -I_i^{(l)}(t) + \sum_j W_{ij}^{(l)}S_j^{(l-1)}(t) + \sum_j V_{ij}^{(l)}S_j^{(l)}(t)\]</span></p>
+                                                <p>Here <span class="math inline">\(\tau_s\)</span> is the synaptic time constant, <span class="math inline">\(W_{ij}^{(l)}\)</span> is the feed-forward synaptic weight from neuron <span class="math inline">\(j\)</span> in layer <span class="math inline">\(l\!-\!1\)</span> to neuron <span class="math inline">\(i\)</span> in layer <span class="math inline">\(l\)</span> and <span class="math inline">\(V_{ij}^{(l)}\)</span> is the recurrent weight from neuron <span class="math inline">\(j\)</span> in layer <span class="math inline">\(l\)</span> to neuron <span class="math inline">\(i\)</span> in layer <span class="math inline">\(l\)</span>.</p>
+                                                <p>Thus, a LIF neuron is fully defined by six parameters <span class="math inline">\(\tau_m, \tau_s, U_{th}, U_{0}, U_{r}, t_{ref}\)</span> plus its synaptic weights <span class="math inline">\(W_{ij}^{(l)}\)</span> and <span class="math inline">\(V_{ij}^{(l)}\)</span>. We refer to these as the <strong>neuron parameters</strong> and <strong>weights</strong> respectively.</p>
+                                                <p>Since we are considering the cases where these parameters may be different for each neuron in the population we should actually refer to <span class="math inline">\(\tau_{m, i}\)</span>, <span class="math inline">\(\tau_{s, i}\)</span>, <span class="math inline">\(U_{th, i}\)</span>, <span class="math inline">\(U_{0, i}\)</span>,<span class="math inline">\(U_{r, i}\)</span>, <span class="math inline">\(t_{ref, i}\)</span>. However, for notational simplicity we will drop the <span class="math inline">\(i\)</span> subscript and it will be assumed that these parameters can be different for each neuron in a population.</p>
+                                                <h2 id="neural-and-synaptic-model-discretisation">Neural and synaptic model discretisation</h2>
+                                                <p>In order to implement the LIF model in a computer it is necessary to discretise it. Assuming a very small simulation time step <span class="math inline">\(\Delta t\)</span>, <a href="#eq:syn" data-reference-type="eqref" data-reference="eq:syn">[eq:syn]</a> can be discretised to</p>
+                                                <p><span class="math display">\[\label{eq:synd}
+                                                    I_i^{(l)}[t+1] = \alpha I_i^{(l)}[t] + \sum_j W_{ij}S_j^{(l-1)}[t] + \sum_j V_{ij} S_j^{(l)}[t]\]</span></p>
+                                                <p>With <span class="math inline">\(\alpha=\exp(-\Delta t / \tau_{s})\)</span>. Similarly, <a href="#eq:mem" data-reference-type="eqref" data-reference="eq:mem">[eq:mem]</a> becomes</p>
+                                                <p><span class="math display">\[\label{eq:memd}
+                                                    U_i^{(l)}[t+1] = \beta (U_i^{(l)}[t]-U_{0}) + U_{0} + (1-\beta)I_i^{(l)}[t] - (U_{th}-U_{r})S_i^{(l)}[t]\]</span></p>
+                                                <p>With <span class="math inline">\(\beta=\exp(-\Delta t / \tau_{m})\)</span>. Finally, the spiking mechanism</p>
+                                                <p><span class="math display">\[\label{eq:spk}
+                                                    S_i^{(l)}[t]=
+                                                \begin{cases}
+                                                1 \qquad if \: U_i^{(l)}[t]\!-\!U_{th}\geq 0\\
+                                                0 \qquad if \: U_i^{(l)}[t]\!-\!U_{th}&lt;0\\ 
+                                                \end{cases}\]</span></p>
+                                                <p>Notice how the last term in <a href="#eq:memd" data-reference-type="eqref" data-reference="eq:memd">[eq:memd]</a> introduces the membrane potential resetting. This would only work if we assume that the neuron potential at spiking time was exactly equal to <span class="math inline">\(U_{th}\)</span>. This may not necessarily be the case since membrane potential update that crossed the threshold may result in <span class="math inline">\(U_i^{(l)}\!&gt;\!U_{th}\)</span> and then the resetting mechanism will not set the membrane potential to <span class="math inline">\(U_r\)</span>. However, we found that this has a negligible effect in our simulations.</p>
+                                                <h2 id="surrogate-gradient-descent-training">Surrogate Gradient Descent Training</h2>
+                                                <p>With the discretisation introduced in the previous section, a spiking layer consists of three cascaded sub-layers: current <a href="#eq:synd" data-reference-type="eqref" data-reference="eq:synd">[eq:synd]</a>, membrane <a href="#eq:memd" data-reference-type="eqref" data-reference="eq:memd">[eq:memd]</a> and spike <a href="#eq:spk" data-reference-type="eqref" data-reference="eq:spk">[eq:spk]</a>. The current and membrane sub-layers have access to its previous state and thus, they can be seen as a particular case of recurrent neural network (RNN). Note that while each neuron is a recurrent unit since it has access to its own previous state, different neurons in the same spiking layer will only be connected if any of the non-diagonal elements of <span class="math inline">\(\pmb{V}^{(l)}\)</span> is non-zero. In other words, all SNNs built using this model are RNNs but not all SNNs are RSNNs.</p>
+                                                <p>We can cascade <span class="math inline">\(L\)</span> spiking layers to conform a Deep Spiking Neural Network analogous to a conventional Deep Neural Network and train it using gradient descent. However, since equation <a href="#eq:spk" data-reference-type="eqref" data-reference="eq:spk">[eq:spk]</a> is non-differentiable, we need to modify the backwards pass as in <span class="citation" data-cites="Zenke2019">(Neftci, Mostafa, and Zenke 2019)</span> so that BPTT algorithm can be used to update the network parameters.</p>
+                                                <p><span class="math display">\[\label{eq:surr}
+                                                    \sigma(U_i^{(l)}) = \frac{U_i^{(l)}}{1+\rho|(U_i^{(l)})|}\]</span></p>
+                                                <p>This means that while in the forward pass the network follows a step function as in <a href="#eq:spk" data-reference-type="eqref" data-reference="eq:spk">[eq:spk]</a>, in the backwards pass it follows a sigmoidal function <a href="#eq:surr" data-reference-type="eqref" data-reference="eq:surr">[eq:surr]</a>, with steepness set by <span class="math inline">\(\rho\)</span>.</p>
+                                                <p>We can now use gradient descent to optimise the synaptic weights <span class="math inline">\(\pmb{W}^{(l)}\)</span> and <span class="math inline">\(\pmb{V}^{(l)}\)</span> as in conventional deep learning. We can also optimise the spiking neuron specific parameters <span class="math inline">\(U_{th}, U_{0}, U_{r}\)</span> since they can be seen as bias terms. The time constants can also be indirectly optimised by training <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> which can be seen as forgetting factors.</p>
+                                                <p>We apply a clipping function to <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> after every update.</p>
+                                                <p><span class="math display">\[\label{eq:clipp}
+                                                clip(x) = 
+                                                \begin{cases}
+                                                    e^{-1/3}, \qquad if \quad x &lt; e^{-1/3}\\
+                                                    0.995, \qquad if \quad x &gt; 0.995
+                                                \end{cases}{}\]</span></p>
+                                                <p>In order to ensure stability, the forgetting factors have to be less than <span class="math inline">\(1\)</span>. Otherwise, the current and membrane potential would grow exponentially. Secondly to make the system causal these factors cannot be less than zero. This however, would allow for arbitrarily small time constants which would not have any meaning given a finite time resolution <span class="math inline">\(\Delta t\)</span>. Thus, we constrain the time constants to be at least <span class="math inline">\(3\Delta t\)</span>. We also set clipping limits for <span class="math inline">\(U_{th}, U_{0}, U_{r}\)</span> such that they are always between the ranges specified in <a href="#table:dist_surr" data-reference-type="ref" data-reference="table:dist_surr">2</a>.</p>
+                                                <p>There are several ways in which the neuron parameters may be trained. One possibility is to make all neurons in a layer share the same neuron parameters. That is, a single value of <span class="math inline">\(U_{th}, U_{0}, U_{r}, \alpha, \beta\)</span> is trained and shared by all neurons in a layer. Another possibility is to optimise each of these parameters in each neuron individually as we have done in our experiments. We also always trained the weight matrices <span class="math inline">\(\pmb{W}^{(l))}\)</span> and <span class="math inline">\(\pmb{V}^{(l))}\)</span>. Training was done by using automatic differentiation on PyTorch (<span class="citation" data-cites="pyTorch">(Paszke et al. 2019)</span>) and Adam optimiser with learning rate <span class="math inline">\(10^{-3}\)</span> and betas <span class="math inline">\((0.9, 0.999)\)</span>.</p>
+                                                <p>In all surrogate gradient descent experiments a single recurrent spiking layer with 128 neurons received all input spikes. This recurrent layer is followed by a feedforward readout layer with <span class="math inline">\(U_{th}\)</span> set to infinity and with as many neurons as classes in the dataset.</p>
+                                                <p>For the loss function, we follow the <em>max-over-time</em> loss in <span class="citation" data-cites="Cramer2020">(Cramer et al. 2020)</span> to take the maximal membrane potential over the entire time in the readout layer. We then take these potentials and compute the cross-entropy loss</p>
+                                                <p><span class="math display">\[\mathcal{L}= -\log\left(\frac{\exp(\mathop{\mathrm{\textit{arg\,max}}}_t  U_{class}^{(L)}[t])}{\sum_j \exp(\mathop{\mathrm{\textit{arg\,max}}}_t  U_{j}^{(L)}[t]))}\right)\]</span></p>
+                                                <p>where <span class="math inline">\(class\)</span> corresponds to the readout neuron index of the correct label for a given sample. The loss is computed as the average of <span class="math inline">\(N_{batch}\)</span> training samples. This was repeated for a total of <span class="math inline">\(N_{epochs}\)</span>.</p>
+                                                <p>In order to improve generalisation we added noise to the input by adding spikes following a Poisson process with rate 1.2 Hz and deleting spikes with probability <span class="math inline">\(0.001\)</span>.</p>
+                                                <p>The parameters used for the network are given in <a href="#table:dist_surr" data-reference-type="ref" data-reference="table:dist_surr">2</a> and <a href="#table:par_surr" data-reference-type="ref" data-reference="table:par_surr">3</a> unless otherwise specified. In <a href="#fig:training-curves-membrane" data-reference-type="ref" data-reference="fig:training-curves-membrane">2</a>F we used a log-normal distribution in which we ensured the mode was the same as in the Gamma distribution we used for the other experiments (see <a href="#table:dist_surr" data-reference-type="ref" data-reference="table:dist_surr">2</a>) but we scaled the standard deviation to be <span class="math inline">\(f\)</span> times that of the original Gamma distribution. We used <span class="math inline">\(f\!=\!4\)</span> for the heterogeneous case. For the intermediate case all neurons were initialised as in the Homogeneous configuration but <span class="math inline">\(5\%\)</span> of them selected randomly were given the largest time constant value allowed of <span class="math inline">\(100\)</span>ms.</p>
+                                                <div id="table:dist_surr">
+                                                <table>
+                                                <caption>Parameter initialisation for the different configurations</caption>
+                                                <thead>
+                                                <tr class="header">
+                                                <th style="text-align: left;">Parameter</th>
+                                                <th style="text-align: center;"><strong>HomInit</strong></th>
+                                                <th style="text-align: center;"><strong>HetInit</strong></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\tau_m\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\bar{\tau}_m\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\Gamma(3, \bar{\tau}_m/3)\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(\tau_s\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\bar{\tau}_s\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\Gamma(3, \bar{\tau}_s/3)\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\mathcal{U} (0.5, 1.5)\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\mathcal{U} (-0.5, 0.5)\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{r}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{r}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(\mathcal{U} (-0.5, 0.5)\)</span></td>
+                                                </tr>
+                                                </tbody>
+                                                </table>
+                                                </div>
+                                                <div id="table:par_surr">
+                                                <table>
+                                                <caption>FORCE network parameters</caption>
+                                                <thead>
+                                                <tr class="header">
+                                                <th style="text-align: left;">Parameter</th>
+                                                <th style="text-align: left;">Value</th>
+                                                <th style="text-align: left;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\Delta t\)</span></td>
+                                                <td style="text-align: left;">0.5ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(M\)</span></td>
+                                                <td style="text-align: left;">500</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\bar{\tau_m}\)</span></td>
+                                                <td style="text-align: left;">20ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(\bar{\tau_s}\)</span></td>
+                                                <td style="text-align: left;">10ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: left;">1V</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: left;">0mV</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{r}\)</span></td>
+                                                <td style="text-align: left;">0mV</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(t_{ref}\)</span></td>
+                                                <td style="text-align: left;">0ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\rho\)</span></td>
+                                                <td style="text-align: left;">100</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                </tbody>
+                                                </table>
+                                                </div>
+                                                <p>All states <span class="math inline">\(I_i(l)[0]\)</span> and <span class="math inline">\(U_i(l)[0]\)</span> are initialised to <span class="math inline">\(0\)</span>. For the weights <span class="math inline">\(\pmb{W}\)</span> and <span class="math inline">\(\pmb{V}\)</span>, we independently sampled from a uniform distribution <span class="math inline">\(\mathcal{U}(-k^{-1/2}, k^{-1/2})\)</span>, with <span class="math inline">\(k\)</span> being the number of afferent connections (<span class="citation" data-cites="lecun1998">(LeCun et al. 1998)</span>).</p>
+                                                <h2 id="force-training">FORCE Training</h2>
+                                                <p>The FORCE method is used to train a network consisting of a single recurrent layer of LIF neurons as in <span class="citation" data-cites="Nicola2017">(Nicola and Clopath 2017)</span>. In this method, there are no feedforward weights and only the recurrent weights <span class="math inline">\(\pmb{V}\)</span> are trained. We can express these weights as</p>
+                                                <p><span class="math display">\[\label{eq:force}
+                                                    \pmb{V} = G\pmb{v}^0 + Q \pmb{\eta} \pmb{\phi}^T\]</span></p>
+                                                <p>The first term in <a href="#eq:force" data-reference-type="eqref" data-reference="eq:force">[eq:force]</a>, namely <span class="math inline">\(G\pmb{v}^0\)</span>, remains static during training and it is initialised to set the network into chaotic spiking. The learned component of the weights <span class="math inline">\(\pmb{\phi}^T\!\in\! \mathbb{R}^{K\times N}\)</span> is updated using the Recursive Least Squares algorithm. The vector <span class="math inline">\(\pmb{\eta}\!\in\! \mathbb{R}^{N\times K}\)</span> serves as a decoder and it is static during learning. The constants <span class="math inline">\(G\)</span> and <span class="math inline">\(Q\)</span> govern the ratio between chaotic and learned weights.</p>
+                                                <p>With this definition of <span class="math inline">\(\pmb{V}\)</span> we can write the currents into the neurons as the sum <span class="math inline">\(\pmb{I}[t]\!=\!\pmb{I}_G[t]\!+\!\pmb{I}_Q[t]\)</span> (we dropped the layer <span class="math inline">\(l\)</span> superscript since we only have a single layer) where we define</p>
+                                                <p><span class="math display">\[\begin{aligned}
+                                                \label{eq:force_currents}
+                                                    \pmb{I}_G[t+1] &amp;= \alpha \pmb{I}_G[t]+G\pmb{v}^0\pmb{S}[t] \\
+                                                    \pmb{I}_Q[t+1] &amp;= Q \pmb{\eta} \pmb{\phi}^T \pmb{r}[t] \\
+                                                    \pmb{r}[t+1] &amp;= \alpha \pmb{r}[t]+\pmb{S}[t]\end{aligned}\]</span></p>
+                                                <p>In order to stabilise the network dynamics we add a High Dimensional Temporal Signal (HDTS) as in <span class="citation" data-cites="Nicola2017">(Nicola and Clopath 2017)</span>. This is an <span class="math inline">\(M\)</span> dimensional periodic signal <span class="math inline">\(\pmb{z}[t]\)</span>. Given the HDTS period <span class="math inline">\(T\)</span>, we split the interval <span class="math inline">\([0, T]\)</span> into <span class="math inline">\(M\)</span> subintervals <span class="math inline">\(I_m, \: m\!=\!1, \ldots , M\)</span> such that each of the components of <span class="math inline">\(\pmb{z}[t]\)</span> is given by</p>
+                                                <p><span class="math display">\[\label{eq:hdts}
+                                                    z_m[t]=
+                                                \begin{cases}
+                                                    \left| A sin\left(\frac{M\pi t}{T}\right)\right|, \quad  \text{if} \quad  t \in I_m \\
+                                                    \qquad 0 \qquad \qquad \text{otherwise} \\
+                                                \end{cases}\]</span></p>
+                                                <p>This signal is then projected onto the neurons leaving equation <a href="#eq:synd" data-reference-type="eqref" data-reference="eq:synd">[eq:synd]</a> as</p>
+                                                <p><span class="math display">\[\label{eq:synd_force}
+                                                    \pmb{I}[t]\!=\!\pmb{I}_G[t]\!+\!\pmb{I}_Q[t] + \pmb{\mu} \pmb{z}[t]\]</span></p>
+                                                <p>where vector <span class="math inline">\(\pmb{\mu}\!\in\! \mathbb{R}^{N\times M}\)</span> is just a decoder similar to <span class="math inline">\(\pmb{\eta}\)</span> in <a href="#eq:force" data-reference-type="eqref" data-reference="eq:force">[eq:force]</a></p>
+                                                <p>The aim of FORCE learning is to approximate a <span class="math inline">\(K\)</span>-dimensional time varying teaching signal <span class="math inline">\(\pmb{x}[t]\)</span>. The vector <span class="math inline">\(\pmb{r}[t]\)</span> is used to obtain an approximant of the desired signal</p>
+                                                <p><span class="math display">\[\hat{\pmb{x}}(t) = \pmb{\phi}^T \pmb{r}[t]\]</span></p>
+                                                <p>The weights are updated using the RLS learning rule according to:</p>
+                                                <p><span class="math display">\[\pmb{\phi}(t) = \pmb{\phi}(t-\Delta t) - \pmb{e}(t) \pmb{P}(t)\pmb{r}(t)\]</span> <span class="math display">\[\pmb{P}(t) = \pmb{P}(t-\Delta t) - \frac{\pmb{P}(t-\Delta t)\pmb{r}(t)\pmb{r}(t)^T\pmb{P}(t-\Delta t)}{1+\pmb{r}(t)^T\pmb{P}(t-\Delta t)\pmb{r}(t)}\]</span></p>
+                                                <p>During the training phase, the teaching signal <span class="math inline">\(\pmb{x}(t)\)</span> is used to perform the RLS update. Then, during the testing phase, the teaching signal is removed.</p>
+                                                <p>We used the parameters given in <a href="#table:par_force" data-reference-type="ref" data-reference="table:par_force">4</a> for all FORCE experiments unless otherwise specified.</p>
+                                                <div id="table:par_force">
+                                                <table>
+                                                <caption>FORCE network parameters</caption>
+                                                <thead>
+                                                <tr class="header">
+                                                <th style="text-align: left;">Parameter</th>
+                                                <th style="text-align: left;">Value</th>
+                                                <th style="text-align: left;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\Delta t\)</span></td>
+                                                <td style="text-align: left;">0.04ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(N\)</span></td>
+                                                <td style="text-align: left;">1000</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(M\)</span></td>
+                                                <td style="text-align: left;">500</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(\tau_m\)</span></td>
+                                                <td style="text-align: left;">10ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(\tau_s\)</span></td>
+                                                <td style="text-align: left;">20ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: left;">-40mV</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: left;">0mV</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(U_{r}\)</span></td>
+                                                <td style="text-align: left;">-65mV</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(t_{ref}\)</span></td>
+                                                <td style="text-align: left;">2ms</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(Q\)</span></td>
+                                                <td style="text-align: left;">10</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><span class="math inline">\(G\)</span></td>
+                                                <td style="text-align: left;">0.04</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><span class="math inline">\(A\)</span></td>
+                                                <td style="text-align: left;">80</td>
+                                                <td style="text-align: left;"></td>
+                                                </tr>
+                                                </tbody>
+                                                </table>
+                                                </div>
+                                                <p>The period <span class="math inline">\(T\)</span> was chosen to be equal to length of the teaching signal <span class="math inline">\(\pmb{x}[t]\)</span>. The membrane potential were randomly initialised following a uniform distribution <span class="math inline">\(\mathcal{U}(U_{r}, U_{th})\)</span>. Vectors <span class="math inline">\(\pmb{\eta}\)</span> and <span class="math inline">\(\pmb{\mu}\)</span> are randomly drawn from <span class="math inline">\(\mathcal{U}(-1, 1)\)</span>. The static weights <span class="math inline">\(\pmb{v}^0\)</span> are drawn from a normal distribution <span class="math inline">\(\mathcal{N}(0, 1/(Np^2))\)</span>, then these weights are set to <span class="math inline">\(0\)</span> with probability <span class="math inline">\(p\!\!=0.1\)</span>. All other variables are initialised to zero unless otherwise specified.</p>
+                                                <h1 id="s1.-heterogeneity-on-other-spiking-neuron-hyperparameters">S1. Heterogeneity on other spiking neuron hyperparameters</h1>
+                                                <div id="table:surr_het_fail">
+                                                <table>
+                                                <caption>Performance comparison among different RSNN configurations on SHD testing set. The configuration for <span class="math inline">\(\tau_m\)</span> and <span class="math inline">\(\tau_s\)</span> was used as specified in the top row. Initialisation and training schemes were applied only for the parameter in its corresponding column</caption>
+                                                <tbody>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"></td>
+                                                <td style="text-align: center;" colspan="3"><strong>HomInit-StdTr</strong> <span class="math inline">\(\tau_m\)</span> and <span class="math inline">\(\tau_s\)</span></td>
+                                                <td style="text-align: center;" colspan="3"><strong>HetInit-HetTr</strong> <span class="math inline">\(\tau_m\)</span> and <span class="math inline">\(\tau_s\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{r}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{th}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{0}\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(U_{r}\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><strong>HomInit-StdTr</strong></td>
+                                                <td style="text-align: center;"><span class="math inline">\(72.8 \!\pm\! 3.4\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(72.8 \!\pm\! 3.4\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(72.8 \!\pm\! 3.4\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(78.9 \!\pm\! 2.0\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(78.9 \!\pm\! 2.0\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(78.9 \!\pm\! 2.0\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><strong>HetInit-StdTr</strong></td>
+                                                <td style="text-align: center;"><span class="math inline">\(71.1 \!\pm\! 2.3\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(69.9 \!\pm\! 2.3\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(70.8 \!\pm\! 3.3\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(79.2 \!\pm\! 2.9\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(74.8 \!\pm\! 4.9\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(79.1 \!\pm\! 2.7\)</span></td>
+                                                </tr>
+                                                <tr class="odd">
+                                                <td style="text-align: left;"><strong>HomInit-HetTr</strong></td>
+                                                <td style="text-align: center;"><span class="math inline">\(73.7 \!\pm\! 2.8\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(71.6 \!\pm\! 3.1\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(70.5 \!\pm\! 3.7\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(79.1 \!\pm\! 1.8\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(76.1 \!\pm\! 3.3\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(76.4 \!\pm\! 2.7\)</span></td>
+                                                </tr>
+                                                <tr class="even">
+                                                <td style="text-align: left;"><strong>HetInit-HetTr</strong></td>
+                                                <td style="text-align: center;"><span class="math inline">\(73.2 \!\pm\! 2.8\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(72.0 \!\pm\! 2.6\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(69.4 \!\pm\! 3.8\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(79.2 \!\pm\! 2.8\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(74.9 \!\pm\! 6.6\)</span></td>
+                                                <td style="text-align: center;"><span class="math inline">\(75.4 \!\pm\! 6.6\)</span></td>
+                                                </tr>
+                                                </tbody>
+                                                </table>
+                                                </div>
+                                                <h1 id="s2.-membrane-time-constant-distribution-consistency-across-trials">S2. Membrane time constant distribution consistency across trials</h1>
+                                                <figure>
+                                                <embed src="figures_supp/Supp_taum_dist.pdf" id="fig:all_taum_dist" style="width:90.0%" /><figcaption aria-hidden="true">Breakdown of membrane time constant distribution for each trial for consistency checking on each dataset</figcaption>
+                                                </figure>
+                                                <h1 id="s3.-synaptic-time-constant-distribution-consistency-across-trials">S3. Synaptic time constant distribution consistency across trials</h1>
+                                                <figure>
+                                                <embed src="figures_supp/Supp_taus_dist.pdf" id="fig:all_taus_dist" style="width:90.0%" /><figcaption aria-hidden="true">Breakdown of synaptic time constant distribution for each trial for consistency checking on each dataset</figcaption>
+                                                </figure>
+                                                <h1 id="s4.-confusion-matrices-dvs-gesture-dataset">S4. Confusion matrices DVS-gesture dataset</h1>
+                                                <p>The classes correspond to</p>
+                                                <ol>
+                                                <li><p>Hand clapping</p></li>
+                                                <li><p>Right hand wave</p></li>
+                                                <li><p>Left hand wave</p></li>
+                                                <li><p>Right arm clockwise</p></li>
+                                                <li><p>Right arm counter-clockwise</p></li>
+                                                <li><p>Left arm clockwise</p></li>
+                                                <li><p>Left arm counter-clockwise</p></li>
+                                                <li><p>Arm roll</p></li>
+                                                <li><p>Air drum</p></li>
+                                                <li><p>Air guitar</p></li>
+                                                </ol>
+                                                <div class="figure*">
+                                                <p><embed src="figures_supp/Supp_confmatrix.pdf" style="width:65.0%" /></p>
+                                                </div>
+                                                <h1 id="s5.-grid-search-of-parameters">S5. Grid search of parameters</h1>
+                                                <div class="figure*">
+                                                <p><embed src="figures_supp/grid_search.pdf" style="width:49.0%" /> <embed src="figures_supp/grid_search2.pdf" style="width:49.0%" /></p>
+                                                </div>
+                                                <h1 id="s6.-all-trials-fashion-mnist">S6. All trials Fashion-MNIST</h1>
+                                                <div class="figure*">
+                                                <p><embed src="figures_supp/fmnist_all_trials.pdf" /></p>
+                                                </div>
+                                                <h1 id="s7.-robustness-under-other-time-constant-distributions">S7. Robustness under other time constant distributions</h1>
+                                                <div class="figure*">
+                                                <p><embed src="figures_supp/S7supplementary_robustness.pdf" style="width:49.0%" /> <embed src="figures_supp/S7distributions.pdf" style="width:49.0%" /></p>
+                                                </div>
+                                                <h1 id="s8.-visualisation-of-temporal-structure-of-dvs128-gesture-dataset-samples">S8. Visualisation of temporal structure of DVS128 gesture dataset samples</h1>
+                                                <figure>
+                                                <embed src="figures/Nature_DVS.pdf" id="fig:dvs_results" /><figcaption aria-hidden="true"> <strong>A.</strong> Visualization of two samples of the DVS128 gesture dataset. Each frame spans a <span class="math inline">\(5\si{\milli\second}\)</span> window with <span class="math inline">\(200\si{\milli\second}\)</span> between frames. To distinguish these gestures we need to integrate over tens of milliseconds. <strong>B.</strong> Confusion matrices of the DVS128 gesture dataset under the fully homogeneous (left) and fully heterogeneous (right) configurations. Class 2 (<em>Right hand wave</em>) is often incorrectly classified as 4 (<em>Right hand clockwise</em>) and 5 (<em>Right hand counter clockwise</em>) under the homogeneous configuration but not under the heterogeneous one.</figcaption>
+                                                </figure>
+                                                <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+                                                <div id="ref-amir2017low" class="csl-entry" role="doc-biblioentry">
+                                                Amir, Arnon, Brian Taba, David Berg, Timothy Melano, Jeffrey McKinstry, Carmelo Di Nolfo, Tapan Nayak, et al. 2017. <span>“A Low Power, Fully Event-Based Gesture Recognition System.”</span> In <em>Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition</em>, 7243–52.
+                                                </div>
+                                                <div id="ref-Maass2019reinf" class="csl-entry" role="doc-biblioentry">
+                                                Bellec, Guillaume, Franz Scherr, Elias Hajek, Darjan Salaj, Robert Legenstein, and Wolfgang Maass. 2019. <span>“Biologically Inspired Alternatives to Backpropagation Through Time for Learning in Recurrent Neural Nets.”</span> <a href="https://arxiv.org/abs/1901.09049">https://arxiv.org/abs/1901.09049</a>.
+                                                </div>
+                                                <div id="ref-spectrogram" class="csl-entry" role="doc-biblioentry">
+                                                Blättler, F., and R. H. Hahnloser. 2011. <span>“<span class="nocase">An efficient coding hypothesis links sparsity and selectivity of neural responses</span>.”</span> <em>PLoS ONE</em> 6 (10): e25506.
+                                                </div>
+                                                <div id="ref-Chelaru2008" class="csl-entry" role="doc-biblioentry">
+                                                Chelaru, Mircea I., and Valentin Dragoi. 2008. <span>“Efficient Coding in Heterogeneous Neuronal Populations.”</span> <em>Proceedings of the National Academy of Sciences</em> 105 (October): 16344–49. <a href="https://doi.org/10.1073/PNAS.0807744105">https://doi.org/10.1073/PNAS.0807744105</a>.
+                                                </div>
+                                                <div id="ref-Cramer2020" class="csl-entry" role="doc-biblioentry">
+                                                Cramer, Benjamin, Yannik Stradmann, Johannes Schemmel, and Friedemann Zenke. 2020. <span>“<span class="nocase">The heidelberg spiking datasets for the systematic evaluation of spiking neural networks</span>.”</span> <em>IEEE Transactions on Neural Networks and Learning Systems</em>, 1–14. <a href="https://doi.org/10.1109/TNNLS.2020.3044364">https://doi.org/10.1109/TNNLS.2020.3044364</a>.
+                                                </div>
+                                                <div id="ref-duarte2019leveraging" class="csl-entry" role="doc-biblioentry">
+                                                Duarte, Renato, and Abigail Morrison. 2019. <span>“Leveraging Heterogeneity for Neural Computation with Fading Memory in Layer 2/3 Cortical Microcircuits.”</span> <em>PLoS Computational Biology</em> 15 (4): e1006781.
+                                                </div>
+                                                <div id="ref-Fang2020" class="csl-entry" role="doc-biblioentry">
+                                                Fang, Wei, Zhaofei Yu, Yanqi Chen, Timothee Masquelier, Tiejun Huang, and Yonghong Tian. 2020. <span>“Incorporating Learnable Membrane Time Constant to Enhance Learning of Spiking Neural Networks,”</span> July. <a href="http://arxiv.org/abs/2007.05785">http://arxiv.org/abs/2007.05785</a>.
+                                                </div>
+                                                <div id="ref-Gjorgjieva2016" class="csl-entry" role="doc-biblioentry">
+                                                Gjorgjieva, Julijana, Guillaume Drion, and Eve Marder. 2016. <span>“<span class="nocase">Computational implications of biophysical diversity and multiple timescales in neurons and synapses for circuit performance</span>.”</span> <em>Current Opinion in Neurobiology</em> 37 (Table 1): 44–52. <a href="https://doi.org/10.1016/j.conb.2015.12.008">https://doi.org/10.1016/j.conb.2015.12.008</a>.
+                                                </div>
+                                                <div id="ref-Hawrylycz2012" class="csl-entry" role="doc-biblioentry">
+                                                Hawrylycz, Michael J., Ed S. Lein, Angela L. Guillozet-Bongaarts, Elaine H. Shen, Lydia Ng, Jeremy A. Miller, Louie N. van de Lagemaat, et al. 2012. <span>“An Anatomically Comprehensive Atlas of the Adult Human Brain Transcriptome.”</span> <em>Nature</em> 489 (September): 391–99. <a href="https://doi.org/10.1038/nature11405">https://doi.org/10.1038/nature11405</a>.
+                                                </div>
+                                                <div id="ref-hunsberger2014competing" class="csl-entry" role="doc-biblioentry">
+                                                Hunsberger, Eric, Matthew Scott, and Chris Eliasmith. 2014. <span>“The Competing Benefits of Noise and Heterogeneity in Neural Coding.”</span> <em>Neural Computation</em> 26 (8): 1600–1623.
+                                                </div>
+                                                <div id="ref-Kilpatrick2013" class="csl-entry" role="doc-biblioentry">
+                                                Kilpatrick, Zachary P., Bard Ermentrout, and Brent Doiron. 2013. <span>“Optimizing Working Memory with Heterogeneity of Recurrent Cortical Excitation.”</span> <em>Journal of Neuroscience</em> 33 (48): 18999–9011. <a href="https://doi.org/10.1523/JNEUROSCI.1641-13.2013">https://doi.org/10.1523/JNEUROSCI.1641-13.2013</a>.
+                                                </div>
+                                                <div id="ref-Koch96" class="csl-entry" role="doc-biblioentry">
+                                                Koch, Christof, and Gilles Laurent. 1999. <span>“Complexity and the Nervous System.”</span> <em>Science</em> 284 (5411): 96–98. <a href="https://doi.org/10.1126/science.284.5411.96">https://doi.org/10.1126/science.284.5411.96</a>.
+                                                </div>
+                                                <div id="ref-lecun1998" class="csl-entry" role="doc-biblioentry">
+                                                LeCun, Yann, Leon Bottou, G Orr, and Klaus-Robert Muller. 1998. <span>“Efficient Backprop.”</span> <em>Neural Networks: Tricks of the Trade. New York: Springer</em>.
+                                                </div>
+                                                <div id="ref-Lein2007" class="csl-entry" role="doc-biblioentry">
+                                                Lein, Ed S., Michael J. Hawrylycz, Nancy Ao, Mikael Ayres, Amy Bensinger, Amy Bernard, Andrew F. Boe, et al. 2007. <span>“Genome-Wide Atlas of Gene Expression in the Adult Mouse Brain.”</span> <em>Nature</em> 445 (January): 168–76. <a href="https://doi.org/10.1038/nature05453">https://doi.org/10.1038/nature05453</a>.
+                                                </div>
+                                                <div id="ref-Lengler2013" class="csl-entry" role="doc-biblioentry">
+                                                Lengler, Florian AND Steger, Johannes AND Jug. 2013. <span>“Reliable Neuronal Systems: The Importance of Heterogeneity.”</span> <em>PLOS ONE</em> 8 (12): 1–10. <a href="https://doi.org/10.1371/journal.pone.0080694">https://doi.org/10.1371/journal.pone.0080694</a>.
+                                                </div>
+                                                <div id="ref-temporal_data" class="csl-entry" role="doc-biblioentry">
+                                                Lerner, Y., C. J. Honey, M. Katkov, and U. Hasson. 2014. <span>“Temporal Scaling of Neural Responses to Compressed and Dilated Natural Speech.”</span> <em>Journal of Neurophysiology</em> 111 (12): 2433–44. <a href="https://doi.org/10.1152/jn.00497.2013">https://doi.org/10.1152/jn.00497.2013</a>.
+                                                </div>
+                                                <div id="ref-Maass2002" class="csl-entry" role="doc-biblioentry">
+                                                Maass, Wolfgang, Thomas Natschläger, and Henry Markram. 2002. <span>“Real-Time Computing Without Stable States: A New Framework for Neural Computation Based on Perturbations.”</span> <em>Neural Computation</em> 14 (11): 2531–60. <a href="https://doi.org/10.1162/089976602760407955">https://doi.org/10.1162/089976602760407955</a>.
+                                                </div>
+                                                <div id="ref-Manis2019" class="csl-entry" role="doc-biblioentry">
+                                                Manis, Paul B., Michael R. Kasten, and Ruili Xie. 2019. <span>“Classification of Neurons in the Adult Mouse Cochlear Nucleus: Linear Discriminant Analysis.”</span> Edited by Manuel S. Malmierca. <em>PLOS ONE</em> 14 (October): e0223137. <a href="https://doi.org/10.1371/journal.pone.0223137">https://doi.org/10.1371/journal.pone.0223137</a>.
+                                                </div>
+                                                <div id="ref-manis_kasten_xie_2019" class="csl-entry" role="doc-biblioentry">
+                                                Manis, Paul, Michael R. Kasten, and Ruili Xie. 2019. <span>“Raw Voltage and Current Traces for Current-Voltage (IV) Relationships for Cochlear Nucleus Neurons.”</span> figshare. <a href="https://doi.org/10.6084/m9.figshare.8854352.v1">https://doi.org/10.6084/m9.figshare.8854352.v1</a>.
+                                                </div>
+                                                <div id="ref-Marsat2010" class="csl-entry" role="doc-biblioentry">
+                                                Marsat, Gary, and Leonard Maler. 2010. <span>“Neural Heterogeneity and Efficient Population Codes for Communication Signals.”</span> <em>Journal of Neurophysiology</em> 104 (5): 2543–55. <a href="https://doi.org/10.1152/jn.00256.2010">https://doi.org/10.1152/jn.00256.2010</a>.
+                                                </div>
+                                                <div id="ref-Zenke2019" class="csl-entry" role="doc-biblioentry">
+                                                Neftci, E. O., H. Mostafa, and F. Zenke. 2019. <span>“Surrogate Gradient Learning in Spiking Neural Networks: Bringing the Power of Gradient-Based Optimization to Spiking Neural Networks.”</span> <em>IEEE Signal Processing Magazine</em> 36 (6): 51–63. <a href="https://doi.org/10.1109/MSP.2019.2931595">https://doi.org/10.1109/MSP.2019.2931595</a>.
+                                                </div>
+                                                <div id="ref-Nicola2017" class="csl-entry" role="doc-biblioentry">
+                                                Nicola, Wilten, and Claudia Clopath. 2017. <span>“<span class="nocase">Supervised learning in spiking neural networks with FORCE training</span>.”</span> <em>Nature Communications</em> 8 (1): 1–15. <a href="https://doi.org/10.1038/s41467-017-01827-3">https://doi.org/10.1038/s41467-017-01827-3</a>.
+                                                </div>
+                                                <div id="ref-Orchard2015" class="csl-entry" role="doc-biblioentry">
+                                                Orchard, Garrick, Ajinkya Jayawant, Gregory K. Cohen, and Nitish Thakor. 2015. <span>“Converting Static Image Datasets to Spiking Neuromorphic Datasets Using Saccades.”</span> <em>Frontiers in Neuroscience</em> 9: 437. <a href="https://doi.org/10.3389/fnins.2015.00437">https://doi.org/10.3389/fnins.2015.00437</a>.
+                                                </div>
+                                                <div id="ref-Osborne2008" class="csl-entry" role="doc-biblioentry">
+                                                Osborne, Leslie C., Stephanie E. Palmer, Stephen G. Lisberger, and William Bialek. 2008. <span>“The Neural Basis for Combinatorial Coding in a Cortical Population Response.”</span> <em>The Journal of Neuroscience</em> 28: 13522. <a href="https://doi.org/10.1523/JNEUROSCI.4390-08.2008">https://doi.org/10.1523/JNEUROSCI.4390-08.2008</a>.
+                                                </div>
+                                                <div id="ref-Padmanabhan2010" class="csl-entry" role="doc-biblioentry">
+                                                Padmanabhan, Krishnan, and Nathaniel N Urban. 2010. <span>“Intrinsic Biophysical Diversity Decorrelates Neuronal Firing While Increasing Information Content.”</span> <em>Nature Neuroscience</em> 13 (October): 1276–82. <a href="https://doi.org/10.1038/nn.2630">https://doi.org/10.1038/nn.2630</a>.
+                                                </div>
+                                                <div id="ref-pyTorch" class="csl-entry" role="doc-biblioentry">
+                                                Paszke, Adam, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, et al. 2019. <span>“PyTorch: An Imperative Style, High-Performance Deep Learning Library.”</span> In <em>Advances in Neural Information Processing Systems 32</em>, edited by H. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alché-Buc, E. Fox, and R. Garnett, 8024–35. Curran Associates, Inc.
+                                                </div>
+                                                <div id="ref-Quax2020" class="csl-entry" role="doc-biblioentry">
+                                                Quax, Silvan C., Michele D’Asaro, and Marcel A. J. van Gerven. 2020. <span>“Adaptive Time Scales in Recurrent Neural Networks.”</span> <em>Scientific Reports</em> 10 (December): 11360. <a href="https://doi.org/10.1038/s41598-020-68169-x">https://doi.org/10.1038/s41598-020-68169-x</a>.
+                                                </div>
+                                                <div id="ref-Schmitt2017" class="csl-entry" role="doc-biblioentry">
+                                                Schmitt, Sebastian, Johann Klahn, Guillaume Bellec, Andreas Grubl, Maurice Guttler, Andreas Hartel, Stephan Hartmann, et al. 2017. <span>“Neuromorphic Hardware in the Loop: Training a Deep Spiking Network on the BrainScaleS Wafer-Scale System.”</span> In <em>2017 International Joint Conference on Neural Networks (IJCNN)</em>, 2227–34. IEEE. <a href="https://doi.org/10.1109/IJCNN.2017.7966125">https://doi.org/10.1109/IJCNN.2017.7966125</a>.
+                                                </div>
+                                                <div id="ref-Shamir2006" class="csl-entry" role="doc-biblioentry">
+                                                Shamir, Maoz, and Haim Sompolinsky. 2006. <span>“Implications of Neuronal Diversity on Population Coding.”</span> <em>Neural Computation</em> 18 (August): 1951–86. <a href="https://doi.org/10.1162/neco.2006.18.8.1951">https://doi.org/10.1162/neco.2006.18.8.1951</a>.
+                                                </div>
+                                                <div id="ref-fashion-mnist" class="csl-entry" role="doc-biblioentry">
+                                                Xiao, Han, Kashif Rasul, and Roland Vollgraf. 2017. <span>“Fashion-MNIST: A Novel Image Dataset for Benchmarking Machine Learning Algorithms.”</span> <em>CoRR</em> abs/1708.07747. <a href="https://arxiv.org/abs/1708.07747">https://arxiv.org/abs/1708.07747</a>.
+                                                </div>
+                                                <div id="ref-Yin2020" class="csl-entry" role="doc-biblioentry">
+                                                Yin, Bojian, Federico Corradi, and Sander M. Bohté. 2020. <span>“Effective and Efficient Computation with Multiple-Timescale Spiking Recurrent Neural Networks.”</span> In <em>International Conference on Neuromorphic Systems 2020</em>. ICONS 2020. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/3407197.3407225">https://doi.org/10.1145/3407197.3407225</a>.
+                                                </div>
+                                                <div id="ref-Zeldenrust2019" class="csl-entry" role="doc-biblioentry">
+                                                Zeldenrust, Fleur, Boris Gutkin, and Sophie Denéve. 2019. <span>“Efficient and Robust Coding in Heterogeneous Recurrent Networks.”</span> <em>bioRxiv</em>, October, 804864. <a href="https://doi.org/10.1101/804864">https://doi.org/10.1101/804864</a>.
+                                                </div>
+                                                </div>
+            </div>
+        </div>
+        <div class="column_container">
+            <div class="column_header">
+                <b>RELATED</b><br/>
+                Click to pin
+            </div>
+            <div id="colRelated" class="column">
+            </div>
+        </div>
+        <div class="column_container">
+            <div class="column_header">
+                <b>PINNED</b><br/>
+                Click to unpin
+            </div>
+            <div id="colPinned" class="column">
+            </div>
+        </div>
+    </div>
+    <script src="threecolumnfixed.js"></script>
+        
+</body>
+</html>

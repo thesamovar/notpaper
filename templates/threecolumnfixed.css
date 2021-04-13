@@ -1,0 +1,136 @@
+body {
+    /* font-size: 200%; */
+    font-size: 14pt;
+    margin: 0px;
+    padding: 0px;
+}
+
+.row {
+    height: 100vh;
+    /* display: flex;
+    flex-direction: row; */
+}
+
+.column {
+    /* float: left; */
+    /* width: 33%; */
+    overflow-y: auto;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.column_container {
+    float: left;
+    width: 33.333333333333%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.column_header {
+    background-color:lightcoral;
+    text-align: center;
+}
+
+.column h1 {
+    font-size: 100%;
+    text-transform: uppercase;
+    border-bottom: 1px solid black;
+}
+
+.column h2 {
+    font-size: 100%;
+    border-bottom: 1px dashed black;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Correct for a weird thing that pandoc does */
+.unnumbered span {
+    display: none;
+}
+
+.related {
+    display: none;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #eeeeee;
+    border-radius: 10px;
+}
+
+figure {
+    margin: 0px;
+}
+
+figure embed {
+    min-width: 100%;
+    min-height: 30vh;
+}
+
+figcaption {
+    font-size: 75%;
+}
+
+.highlighted {
+    background-color: lightgreen;
+}
+
+.csl-entry {
+    font-size: 75%;
+}
+
+/************** STUFF FROM PANDOC'S HTML CSS *************/
+
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+/* div.csl-bib-body { } */
+div.csl-entry {
+    clear: both;
+}
+.hanging div.csl-entry {
+    margin-left:2em;
+    text-indent:-2em;
+}
+div.csl-left-margin {
+    min-width:2em;
+    float:left;
+}
+div.csl-right-inline {
+    margin-left:2em;
+    padding-left:1em;
+}
+div.csl-indent {
+    margin-left: 2em;
+}
+
+table {
+    margin: 1em 0;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  table caption {
+    margin-bottom: 0.75em;
+  }
+  tbody {
+    margin-top: 0.5em;
+    border-top: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  th {
+    border-top: 1px solid #1a1a1a;
+    padding: 0.25em 0.5em 0.25em 0.5em;
+  }
+  td {
+    padding: 0.125em 0.5em 0.25em 0.5em;
+  }
