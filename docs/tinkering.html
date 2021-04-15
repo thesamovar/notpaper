@@ -1,0 +1,87 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Test</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style>
+      div {
+          padding: 10px;
+      }
+      .contained {
+          display: none;
+      }
+      #test1 {
+          background-color: lightgreen;
+      }
+      #test2 {
+          background-color: lightblue;
+      }
+      #test3 {
+          background-color: lightsalmon;
+      }
+      #basecontainer {
+          display: none;
+          background-color: lightgrey;
+      }
+  </style>
+
+</head>
+
+<body>
+    <div id="test1" class="contained">Test 1</div>
+    <div id="test2" class="contained">Test 2</div>
+    <div id="test3" class="contained">Test 3</div>
+
+    <div id="basecontainer" class="container">
+        Container:
+        <a onclick="toggleContainerView(this)">Minimise/Maximise</a>
+        <a onclick="closeContainer(this)">Close</a>
+    </div>
+
+    <div id="mainview">
+        Main view. Make a
+        <a onclick="makeContainer('test1')">1</a>,
+        <a onclick="makeContainer('test2')">2</a>,
+        <a onclick="makeContainer('test3')">3</a>.
+    </div>
+
+    <script>
+        function newContainer(elem) {
+            const bc = document.getElementById("basecontainer");
+            const container = bc.cloneNode(true);
+            const newelem = elem.cloneNode(true);
+            container.appendChild(newelem);
+            newelem.style.display = "block";
+            //container.style.display = "block";
+            return container;
+        }
+
+        function toggleContainerView(elem) {
+            const container = elem.closest(".container");
+            const contained = container.querySelector(".contained");
+            $(contained).slideToggle();
+        }
+
+        function closeContainer(elem) {
+            const container = elem.closest(".container");
+            //container.`remove();
+            $(container).fadeOut(200, function() {
+                $(container).css({visibility:"hidden", display:"block"}).slideUp();
+    
+            });
+        }
+
+        function makeContainer(id) {
+            const elem = document.getElementById(id);
+            const container = newContainer(elem);
+            document.getElementById("mainview").appendChild(container);
+            $(container).slideDown();
+        }
+
+    </script>
+</body>
+</html>
