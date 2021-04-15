@@ -1,3 +1,5 @@
+const slideTime = 500;
+
 // from https://stackoverflow.com/questions/7627000/javascript-convert-string-to-safe-class-name-for-css
 function makeSafeForCSS(name) {
     return name.replace(/[^a-z0-9]/g, function(s) {
@@ -8,20 +10,27 @@ function makeSafeForCSS(name) {
     });
 }
 
-function sortRelated() {
-
-}
-
 function updateRelated(elem, wasPinned) {
     if(elem.relatedCount==1 || (wasPinned && elem.relatedCount>=1)) {
         const tgt = document.querySelector("#colRelated");
-        tgt.appendChild(elem);
-        elem.style.display = "block";
+        if(wasPinned) {
+            $(elem).slideUp(slideTime, function() {
+                tgt.appendChild(elem);
+                $(elem).slideDown(slideTime);
+            });
+        } else {
+            tgt.appendChild(elem);
+            //if(elem.style.display!="block") {
+            $(elem).slideDown(slideTime);
+            //}
+        }
+        //elem.style.display = "block";
     }
     if(elem.relatedCount==0) {
         const tgt = document.querySelector("#colMain");
-        elem.style.display = "none";
-        tgt.appendChild(elem); // move here so we don't have to sort it
+        //elem.style.display = "none";
+        $(elem).slideUp(slideTime, function() {  tgt.appendChild(elem) });
+        //tgt.appendChild(elem); // move here so we don't have to sort it
     }
 }
 
@@ -51,14 +60,17 @@ function showRelated(entries, observer) {
 }
 
 function clickRelated(elem) {
-    toggleHighlightRelatedElement(elem);
+    //toggleHighlightRelatedElement(elem);
     if(elem.isPinned) {
         elem.isPinned = false;
         updateRelated(elem, true);
         return;
     }
-    document.querySelector("#colPinned").appendChild(elem);
-    elem.isPinned = true;
+    $(elem).slideUp(slideTime, function() {
+        document.querySelector("#colPinned").appendChild(elem);
+        elem.isPinned = true;
+        $(elem).slideDown(slideTime);
+    })
 }
 
 function toggleHighlightRelatedElement(elem) {
