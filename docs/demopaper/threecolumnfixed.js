@@ -1,4 +1,4 @@
-const slideTime = 500;
+const slideTime = 200;
 
 // from https://stackoverflow.com/questions/7627000/javascript-convert-string-to-safe-class-name-for-css
 function makeSafeForCSS(name) {
@@ -108,7 +108,7 @@ document.querySelectorAll(".citation").forEach(elem => {
 // Set all figures to be a related item
 document.querySelectorAll("figure").forEach(elem => {
     elem.classList.add("related");
-    const embed = elem.querySelector("embed");
+    const embed = elem.querySelector("img");
     const id = makeSafeForCSS(embed.id);
     embed.removeAttribute('id');
     elem.id = id;

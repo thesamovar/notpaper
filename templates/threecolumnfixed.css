@@ -71,9 +71,13 @@ figure {
     margin: 0px;
 }
 
-figure embed {
+/* figure embed {
     min-width: 100%;
     min-height: 30vh;
+} */
+
+.figureImage {
+    width: 100%;
 }
 
 figcaption {
