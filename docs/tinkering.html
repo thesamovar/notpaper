@@ -27,6 +27,23 @@
           display: none;
           background-color: lightgrey;
       }
+      .container {
+          position: relative;
+      }
+      .minmax {
+          font-size: 150%;
+          position: absolute;
+          top: 0px;
+          right: 0px;
+      }
+      .container .minmax {
+          opacity: 0.0;
+          transition: opacity 0.2s ease-in-out;
+      }
+      .container:hover .minmax {
+          opacity: 1.0;
+          transition: opacity 0.2s ease-in-out;
+      }
   </style>
 
 </head>
@@ -38,7 +55,7 @@
 
     <div id="basecontainer" class="container">
         Container:
-        <a onclick="toggleContainerView(this)">Minimise/Maximise</a>
+        <a onclick="toggleContainerView(this)" class="minmax">▼</a>
         <a onclick="closeContainer(this)">Close</a>
     </div>
 

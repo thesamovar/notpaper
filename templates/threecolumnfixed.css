@@ -92,6 +92,42 @@ figcaption {
     font-size: 75%;
 }
 
+/* Pinning */
+
+.related {
+    position: relative;
+}
+
+.pinIcon {
+    width: 25px;
+    height: 25px;
+    font-size: 14pt;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    transform: rotate(45deg);
+    background-color: lightgreen;
+    border-radius: 50%;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 25px;
+}
+
+.pinIcon:hover {
+    background-color: yellow;
+}
+
+.related .pinIcon {
+    opacity: 0.0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.related:hover .pinIcon {
+    opacity: 1.0;
+    transition: opacity 0.2s ease-in-out;
+}
+
 /************** STUFF FROM PANDOC'S HTML CSS *************/
 
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}

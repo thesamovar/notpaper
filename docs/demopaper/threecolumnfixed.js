@@ -94,6 +94,15 @@ function toggleHighlightRelated(event) {
 
 ////////////////////// TRANSFORM SOME ELEMENTS /////////////////
 
+// Spans that contain their own id should be hidden
+document.querySelectorAll("span").forEach(elem => {
+    if(elem.hasAttribute('id')) {
+        if(elem.innerText.toLowerCase().includes(elem.id.toLowerCase())) {
+            elem.style.display = "none";
+        }
+    }
+});
+
 // Set all references to be related only
 document.querySelectorAll(".csl-entry").forEach(elem => {
     elem.classList.add("related");
@@ -105,22 +114,28 @@ document.querySelectorAll(".citation").forEach(elem => {
     elem.dataset.related = elem.dataset.cites.split(' ').map(function(a) { return '#ref-'+a; }).join(',');
 });
 
+// Which figures are referred to?
+// Set all figure references to have a related item
+const referencedFigures = new Set();
+document.querySelectorAll('a[data-reference-type="ref"]').forEach(elem => {
+    elem.classList.add("hasRelated");
+    const ref = makeSafeForCSS(elem.dataset.reference);
+    referencedFigures.add(ref);
+    elem.dataset.related = '#'+ref;
+    elem.removeAttribute('href')
+});
+
 // Set all figures to be a related item
-document.querySelectorAll("figure").forEach(elem => {
+document.querySelectorAll("figure,.figure").forEach(elem => {
     elem.classList.add("related");
     const embed = elem.querySelector("img");
     const id = makeSafeForCSS(embed.id);
     embed.removeAttribute('id');
     elem.id = id;
-    // need to add its name
-});
-
-// Set all figure references to have a related item
-document.querySelectorAll('a[data-reference-type="ref"]').forEach(elem => {
-    //console.log(elem);
-    elem.classList.add("hasRelated");
-    elem.dataset.related = '#'+makeSafeForCSS(elem.dataset.reference);
-    elem.removeAttribute('href')
+    if(!referencedFigures.has(id)) {
+        const placeholderRef = `<p><a class="hasRelated" data-related="#${id}">Unreferenced figure here</a></p>`;
+        elem.insertAdjacentHTML('afterend', placeholderRef);
+    }
 });
 
 // Make all hasRelated items be observed
@@ -132,7 +147,10 @@ document.querySelectorAll(".hasRelated").forEach(div => {
 
 // Set all related items to have a pin function
 document.querySelectorAll(".related").forEach(elem => {
-    elem.onclick = function() { clickRelated(elem); };
+    const pinIcon = $('<div class="pinIcon"><i class="fa fa-thumb-tack"></i></div>');
+    pinIcon.appendTo($(elem));
+    //elem.onclick = function() { clickRelated(elem); };
+    pinIcon.click(function() { clickRelated(elem); });
     elem.isPinned = false;
 })
 

@@ -65,6 +65,7 @@ html = re.sub('''<embed src="(.*?).pdf" id="(.*?)".*?>''',
               f'''<img src="\\1.png" id="\\2" class="figureImage"/>''', html, flags=re.IGNORECASE)
 html = re.sub('''<embed src="(.*?).pdf".*?>''',
               f'''<img src="\\1.png" id="\\1" class="figureImage"/>''', html, flags=re.IGNORECASE)
+html = html.replace('"figure*"', '"figure"')
 open(output_html_file, "w", encoding="utf-8").write(html)
 
 # copy css/js
