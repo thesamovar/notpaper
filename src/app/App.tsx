@@ -1,14 +1,24 @@
 import React, {useEffect} from 'react';
-import Paper from 'src/features/paper/Paper';
+import {useSelector} from 'react-redux';
+import PaperPicker from 'src/features/paperPicker/PaperPicker';
+import {getActivePaperId} from 'src/features/paperPicker/paperPickerSlice';
+import Reader from 'src/features/reader/Reader';
 
 /*
  * Entrypoint
  */
 function App() {
+	const hasActivePaper = !!useSelector(getActivePaperId)
 
   return (
     <div>
-        <Paper />
+			{
+				hasActivePaper ? (
+					<Reader />
+				) : (
+					<PaperPicker />
+				)
+			}
     </div>
   );
 }

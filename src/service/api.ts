@@ -13,6 +13,7 @@ const apiService = (base: string) => ({
 
 		const res = await fetch(url, {
 			method: 'POST',
+			headers: new Headers({'content-type': 'application/json'}),
 			body: JSON.stringify({
 				text: btoa(text)  // base64 encoding
 			})

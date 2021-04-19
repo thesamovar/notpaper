@@ -13,13 +13,15 @@
  * The flow of data when a component receives state:
  * Component <- Selector <- State
  */
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import paperReducer from '../features/paperList/paperListSlice';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
+import paperReducer from 'src/features/paperPicker/paperPickerSlice'
+import readerReducer from 'src/features/reader/readerSlice'
 
 // The store is what controls the state of the app
 export const store = configureStore({
   reducer: {
-		paper: paperReducer
+		paper: paperReducer,
+		reader: readerReducer
   },
 })
 
