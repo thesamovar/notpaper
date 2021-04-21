@@ -35,16 +35,19 @@ export interface ParagraphRef extends ResourceRef {
 }
 
 export type RelatedResourceRef = CitationRef | FigureRef
+export type RefChain<T extends ResourceRef> = T[]
+export type CanHover = RelatedResourceRef
+export type CanPin = RelatedResourceRef
 
 // Components of a Section
 
 export type SectionItem  = ParagraphRef | FigureRef
 export type Section = {
 	title: string,
-	content: SectionItem[]
+	content: RefChain<SectionItem>
 }
 
-export type ParagraphItem = string | CitationRef
+export type ParagraphItem = string | CitationRef | RefChain<CitationRef>
 export interface Paragraph {
 	id: ID
 	content: ParagraphItem[]
@@ -132,16 +135,43 @@ const TEST_PAPER: AbstractPaper = {
 			'par1': {
 				id: 'par1',
 				content: [
-					`
-					The brain is known to be deeply heterogeneous at all scales (Koch and Laurent 1999), but it is still not known whether this heterogeneity plays an important functional role or if it is just a byproduct of noisy developmental processes and contingent evolutionary history. A number of hypothetical roles have been suggested (reviewed in (Gjorgjieva, Drion, and Marder 2016)), in efficient coding (Shamir and Sompolinsky 2006; Chelaru and Dragoi 2008; Osborne et al. 2008; Marsat and Maler 2010; Padmanabhan and Urban 2010; Hunsberger, Scott, and Eliasmith 2014; Zeldenrust, Gutkin, and Denéve 2019), reliability (Lengler 2013), working memory (Kilpatrick, Ermentrout, and Doiron 2013), and functional specialisation 
-					`,
+					`The brain is known to be deeply heterogeneous at all scales (Koch and Laurent 1999), but it is still not known whether this heterogeneity plays an important functional role or if it is just a byproduct of noisy developmental processes and contingent evolutionary history. A number of hypothetical roles have been suggested (reviewed in (Gjorgjieva, Drion, and Marder 2016)), in efficient coding `,
+					[
+						{
+							kind: 'citation',
+							id: 'cit4'
+						},
+						{
+							kind: 'citation',
+							id: 'cit5'
+						},
+						{
+							kind: 'citation',
+							id: 'cit6'
+						},
+						{
+							kind: 'citation',
+							id: 'cit7'
+						},
+						{
+							kind: 'citation',
+							id: 'cit8'
+						},
+						{
+							kind: 'citation',
+							id: 'cit9'
+						},
+						{
+							kind: 'citation',
+							id: 'cit10'
+						},
+					],
+					` reliability (Lengler 2013), working memory (Kilpatrick, Ermentrout, and Doiron 2013), and functional specialisation `,
 					{
 						kind: 'citation',
 						id: 'cit1'
 					},
-					`
-However, previous studies have largely used simplified tasks or networks, and it remains unknown whether or not heterogeneity can help animals solve complex information processing tasks in natural environments. Recent work has allowed us, for the first time, to train biologically realistic spiking neural networks to carry out these tasks at a high level of performance, using methods derived from machine learning. We used two different learning models (Nicola and Clopath 2017; Neftci, Mostafa, and Zenke 2019) to investigate the effect of introducing heterogeneity in the time scales of neurons when performing tasks with realistic and complex temporal structure. We found that it improves overall performance, makes learning more stable and robust, and learns neural parameter distributions that match experimental observations, suggesting that the heterogeneity observed in the brain may be a vital component to its ability to adapt to new environments.
-					`
+					`However, previous studies have largely used simplified tasks or networks, and it remains unknown whether or not heterogeneity can help animals solve complex information processing tasks in natural environments. Recent work has allowed us, for the first time, to train biologically realistic spiking neural networks to carry out these tasks at a high level of performance, using methods derived from machine learning. We used two different learning models (Nicola and Clopath 2017; Neftci, Mostafa, and Zenke 2019) to investigate the effect of introducing heterogeneity in the time scales of neurons when performing tasks with realistic and complex temporal structure. We found that it improves overall performance, makes learning more stable and robust, and learns neural parameter distributions that match experimental observations, suggesting that the heterogeneity observed in the brain may be a vital component to its ability to adapt to new environments.`
 				]
 			},
 			'par2': {
@@ -190,18 +220,53 @@ We found that heterogeneity in time constants had a profound impact on performan
 			'cit1': {
 				id: 'cit1',
 				text: 'Duarte, Renato, and Abigail Morrison. 2019. “Leveraging Heterogeneity for Neural Computation with Fading Memory in Layer 2/3 Cortical Microcircuits.” PLoS Computational Biology 15 (4): e1006781. ',
-				shortForm: '(Duarte and Morrison 2019)'
+				shortForm: 'Duarte and Morrison 2019'
 			},
 			'cit2': {
 				id: 'cit2',
 				text: 'cit2',
-				shortForm: '(Neftci, Mostafa, and Zenke 2019)'
+				shortForm: 'Neftci, Mostafa, and Zenke 2019'
 			},
 			cit3: {
 				id: 'cit3',
-				text: 'blah blah',
-				shortForm: '(Bory Ryrne, Yorr Enyrb, 2021)'
-			}
+				text: 'cit3',
+				shortForm: 'Bory Ryrne, Yorr Enyrb, 2021'
+			},
+			cit4: {
+				id: 'cit4',
+				text: 'cit4',
+				shortForm: 'Shamir and Sompolinsky 2006'
+			},
+			cit5: {
+				id: 'cit5',
+				text: 'cit5',
+				shortForm: 'Chelaru and Dragoi 2008'
+			},
+			cit6: {
+				id: 'cit6',
+				text: 'cit6',
+				shortForm: 'Osborne et al. 2008'
+			},
+			cit7: {
+				id: 'cit7',
+				text: 'cit7',
+				shortForm: 'Marsat and Maler 2010'
+			},
+			cit8: {
+				id: 'cit8',
+				text: 'cit8',
+				shortForm: 'Padmanabhan and Urban 2010'
+			},
+			cit9: {
+				id: 'cit9',
+				text: 'cit9',
+				shortForm: 'Hunsberger, Scott, and Eliasmith 2014'
+			},
+			cit10: {
+				id: 'cit10',
+				text: 'cit10',
+				shortForm: 'Zeldenrust, Gutkin, and Denéve 2019'
+			},
 		}
 	}
 }
@@ -276,21 +341,30 @@ export const getActivePaper = (state: RootState) => (
 )
 export const paperIsLoading = (id: string) => (state: RootState) => state.paper.loadingById[id]
 export const paperHasError = (id: string) => (state: RootState) => state.paper.errorById[id]
-const thingInPaperById = (paperId: string) => (resource: ResourceKeys) => (thingId: string) => (state: RootState) => (
-	state.paper.papersById[paperId].resources[resource][thingId]
+const thingInPaperById = (paper: AbstractPaper) => (resource: ResourceKeys) => (thingId: string) => (
+	paper.resources[resource][thingId]
 )
 const thingInActivePaperById = (resource: ResourceKeys) => (thingId: string) => (state: RootState) => {
-	const paperId = state.paper.activePaperId
-	if (!paperId) {
+	const paper = getActivePaper(state)
+	if (!paper) {
 		return undefined
 	}
 
-	return thingInPaperById(paperId)(resource)(thingId)(state)
+	return thingInPaperById(paper)(resource)(thingId)
 }
-// TODO: How can we make these typesafe?
+const thingsInActivePaperById = (resource: ResourceKeys) => (thingIds: string[]) => (state: RootState) => {
+	const paper = getActivePaper(state)
+	if (!paper) {
+		return undefined
+	}
+
+	return thingIds.map(id => thingInPaperById(paper)(resource)(id))
+}
+
+// TODO: How can we type these?
 export const paragraphById = (thingId: string) => thingInActivePaperById('paragraph')(thingId)
 export const figureById = (thingId: string) => thingInActivePaperById('figure')(thingId)
 export const citationById = (thingId: string) => thingInActivePaperById('citation')(thingId)
-
+export const citationsById = (ids: string[]) => thingsInActivePaperById('citation')(ids)
 
 export default paperSlice.reducer

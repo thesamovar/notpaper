@@ -35,3 +35,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
     Action<string>
 >
 
+(window as any).getState = store.getState

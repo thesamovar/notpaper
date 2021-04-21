@@ -3,27 +3,26 @@
  */
 
 import {Box} from "@theme-ui/components";
+import _ from "lodash";
 import {FunctionComponent} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import FlexBox from "src/common/components/FlexBox";
 import {isCitationRef, isFigureRef} from "src/common/util/guards";
-import {Citation as TCitation, citationById, RelatedResourceRef} from "src/features/paperPicker/paperPickerSlice";
+import {Citation as TCitation, citationById, CitationRef, RelatedResourceRef} from "src/features/paperPicker/paperPickerSlice";
 import {pinResource, resourceHasHover, resourceIsPinned, selectRelatedResources} from "../../readerSlice";
 
-const CITATION = 'citation'
-
 interface CitationProps {
-	id: string
+	resopurceRef: CitationRef
 }
 
-const Citation: FunctionComponent<CitationProps> = ({ id }) => {
+const Citation: FunctionComponent<CitationProps> = ({ resopurceRef }) => {
 	const dispatch = useDispatch()
-	const citation = useSelector(citationById(id)) as TCitation
-	const hasHover = useSelector(resourceHasHover(id, CITATION))
-	const isPinned = useSelector(resourceIsPinned(id, CITATION))
+	const citation = useSelector(citationById(resopurceRef.id)) as TCitation
+	const hasHover = useSelector(resourceHasHover(resopurceRef))
+	const isPinned = useSelector(resourceIsPinned(resopurceRef))
 
 	const onClick = () => {
-		dispatch(pinResource({ id, kind: CITATION, isPinned: !isPinned }))
+		dispatch(pinResource({ ...resopurceRef, isPinned: !isPinned }))
 	}
 
 	return (
@@ -41,7 +40,7 @@ interface RelatedResourceProps {
 }
 const RelatedResource: FunctionComponent<RelatedResourceProps> = ({ resource }) => {
 	if (isCitationRef(resource)) {
-		return <Citation id={resource.id} />
+		return <Citation resopurceRef={resource} />
 		} else if (isFigureRef(resource)) {
 			return null
 		} else {

@@ -9,16 +9,16 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
-import {Optional} from 'src/common/util/types';
+import {isRefChain} from 'src/common/util/guards';
 import {RootState} from '../../app/store';
-import {getActivePaper, RelatedResourceKind, RelatedResourceRef} from '../paperPicker/paperPickerSlice';
+import {CanHover, CanPin, CitationRef, getActivePaper, RefChain, RelatedResourceKind, RelatedResourceRef} from '../paperPicker/paperPickerSlice';
 
 ///////////////////
 //     STATE     //
 ///////////////////
 
 export interface ReaderState {
-	hoverResource?: RelatedResourceRef
+	hoveredResources: CanHover[]
 	pinnedResources: {
 		[s in RelatedResourceKind]: {
 			[s: string]: boolean
@@ -32,7 +32,7 @@ export interface ReaderState {
 }
 
 const initialState: ReaderState = {
-	hoverResource: undefined,
+	hoveredResources: [],
 	pinnedResources: {
 		citation: {},
 		figure: {}
@@ -48,7 +48,7 @@ const initialState: ReaderState = {
 /////////////////////////////
 
 export type SetVisiblePayload = RelatedResourceRef & { isVisible: boolean }
-export type SetHoverResourcePayload = Optional<RelatedResourceRef>
+export type ToggleHoveredResourcePayload = CanHover
 export type SetPinnedPayload = RelatedResourceRef & { isPinned: boolean }
 
 
@@ -64,8 +64,13 @@ export const readerSlice = createSlice({
 				const { kind, id, isVisible } = action.payload
         state.visibleResources[kind][id] = isVisible
       },
-			setHoverResource: (state, action: PayloadAction<SetHoverResourcePayload>) => {
-				state.hoverResource = action.payload
+			toggleHoveredResource: (state, action: PayloadAction<ToggleHoveredResourcePayload>) => {
+				const isHovered = state.hoveredResources.some(ref => _.isEqual(ref, action.payload))
+				if (isHovered) {
+					state.hoveredResources = state.hoveredResources.filter(ref => !_.isEqual(ref, action.payload))
+				} else {
+					state.hoveredResources.push(action.payload)
+				}
 			},
 			pinResource: (state, action: PayloadAction<SetPinnedPayload>) => {
 				const { kind, id, isPinned } = action.payload
@@ -78,7 +83,7 @@ export const readerSlice = createSlice({
 //     ACTIONS     //
 /////////////////////
 
-export const { pinResource, setHoverResource, setIsVisible: setIsVisible } = readerSlice.actions;
+export const { pinResource, toggleHoveredResource, setIsVisible} = readerSlice.actions;
 
 ///////////////////////
 //     SELECTORS     //
@@ -143,32 +148,46 @@ export const selectRelatedResources = (state: RootState): Array<RelatedResourceR
 
 	const combined = _.union(pinnedResources, visibleResources)
 	return _.uniqWith(combined, (first, second) => (
-		first.id == second.id && first.kind == second.kind
+		first.id === second.id && first.kind === second.kind
 	))
 }
 
 /**
  * Returns a selector function, which determines if the given resource is hovered
  *
- * @param id 			The ID of the resource
- * @param kind 		The kind of the resource
+ * @param ref 		The resource which may or may not be hovered
  *
  * @returns 			A selector function, which takes RootState and returns whether the resource is hovered
  */
-export const resourceHasHover = (id: string, kind: RelatedResourceKind) => (state: RootState) => (
-	state.reader.hoverResource?.id == id && state.reader.hoverResource.kind == kind
-)
+export const resourceHasHover = (ref: CanHover) => (state: RootState) => {
+	const hoveredResources = state.reader.hoveredResources
+	return !!_.find(hoveredResources, ref)
+}
+
+/**
+ * Returns a selector function, which determines if the given resource is hovered
+ *
+ * @param chain 		The ChainRef that may or may not be hovered
+ *
+ * @returns 			A selector function, which takes RootState and returns whether the resource is hovered
+ */
+export const citationChainHasHover = (chain: RefChain<CitationRef>) => (state: RootState) => {
+	if (isRefChain<CitationRef>(state.reader.hoveredResources)) {
+		return chain.every(ref => _.includes(state.reader.hoveredResources, ref))
+	} else {
+		return false
+	}
+}
 
 /**
  * Returns a selector function, which determines if the given resource is pinned
  *
- * @param id 			The ID of the resource
- * @param kind 		The kind of the resource
+ * @param ref 			The ResourceRef which may or may not be pinned
  *
  * @returns 			A selector function, which takes RootState and returns whether the resource is pinned
  */
-export const resourceIsPinned = (id: string, kind: RelatedResourceKind) => (state: RootState) => (
-	state.reader.pinnedResources[kind][id] == true  // TODO is this safe from null/undefined values?
+export const resourceIsPinned = (ref: CanPin) => (state: RootState) => (
+	state.reader.pinnedResources[ref.kind][ref.id] === true  // TODO is this safe from null/undefined values?
 )
 
 export default readerSlice.reducer

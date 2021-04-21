@@ -1,7 +1,8 @@
 import {FunctionComponent} from "react"
-import {isCitationRef, isText} from "src/common/util/guards"
+import {isCitationRef, isRefChain, isText} from "src/common/util/guards"
 import {ParagraphItem as TParagraphItem} from "src/features/paperPicker/paperPickerSlice"
 import Citation from "./Citation"
+import CitationChain from "./CitationChain"
 
 interface ParagraphItemProps {
 	item: TParagraphItem
@@ -20,8 +21,11 @@ const ParagraphItem: FunctionComponent<ParagraphItemProps> = ({ item }) => {
 			</>
 		) 
 	} else if (isCitationRef(item)) {
-		return <Citation id={item.id} />
-	} else {
+		return <Citation resourceRef={item} />
+
+		} else if (isRefChain(item)) {
+			return <CitationChain refChain={item} />
+		} else {
 		console.error(`Invalid section item: ${item}`)
 		return null
 	}
