@@ -50,6 +50,6 @@
   "devDependencies": {
     "@types/lodash": "^4.14.168",
     "@types/styled-system__theme-get": "^5.0.1",
-    "jest": "^26.0.0"
+    "jest": "^26.6.0"
   }
 }
