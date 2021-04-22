@@ -14,7 +14,7 @@
  * Component <- Selector <- State
  */
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
-import paperReducer from 'src/features/paperPicker/paperPickerSlice'
+import paperReducer from 'src/features/paper/paperSlice'
 import readerReducer from 'src/features/reader/readerSlice'
 
 // The store is what controls the state of the app

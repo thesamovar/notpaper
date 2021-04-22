@@ -2,7 +2,7 @@
  * Type Guards
  */
 
-import {CitationRef, FigureRef, ParagraphRef, RefChain, RelatedResourceRef, ResourceRef} from "src/features/paperPicker/paperPickerSlice"
+import {CitationRef, FigureRef, ParagraphRef, RefChain, RelatedResourceRef, ResourceRef} from "src/common/types"
 
 
 export const isText = (item: any): item is string => typeof item === "string"

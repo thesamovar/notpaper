@@ -1,8 +1,8 @@
 import FlexBox from "src/common/components/FlexBox"
-import {AbstractPaper} from "src/features/paperPicker/paperPickerSlice"
-import Abstract from "../Abstract"
-import Header from "../Header"
-import Narrative from "../Narrative"
+import {AbstractPaper} from "src/common/types"
+import Abstract from "./Abstract"
+import Authors from "./Authors"
+import Narrative from "./Narrative"
 
 
 interface MainPanelProps {
@@ -16,8 +16,17 @@ interface MainPanelProps {
  */
 const MainPanel = ({ paper }: MainPanelProps) => {
 	return (
-		<FlexBox column sx={{ width: "50%", overflowY: 'auto', height: '100vh' }}>
-			<Header {...paper} />
+		<FlexBox 
+			column 
+			sx={{ 
+				px: 6,
+				width: "50%", 
+				overflowY: 'auto', 
+				height: '100vh' 
+			}}
+		>
+			<h1>{paper.title}</h1>
+			<Authors {...paper} />
 			<Abstract {...paper} />
 			<Narrative {...paper} />
 		</FlexBox>

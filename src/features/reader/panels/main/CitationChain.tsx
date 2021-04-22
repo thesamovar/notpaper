@@ -2,8 +2,9 @@ import {Box} from "@theme-ui/components"
 import {FunctionComponent, useRef} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
-import {Citation as TCitation, citationById, CitationRef, citationsById, RefChain} from "src/features/paperPicker/paperPickerSlice"
-import {citationChainHasHover, toggleHoveredResource, setIsVisible} from "../readerSlice"
+import {Citation as TCitation, CitationRef, RefChain} from "src/common/types"
+import { citationsById } from "src/features/paper/paperSlice"
+import {citationChainHasHover, toggleHoveredResource, setIsVisible, setNotVisible} from "src/features/reader/readerSlice"
 
 interface CitationChainProps {
 	refChain: RefChain<CitationRef>
@@ -19,7 +20,13 @@ const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
 	useIsVisible<HTMLSpanElement>(ref, (isVisible) => (
-		refChain.forEach(ref => dispatch(setIsVisible({ ...ref, isVisible })))
+		refChain.forEach(resourceRef => {
+			if (isVisible) {
+				dispatch(setIsVisible(resourceRef))
+			} else {
+				dispatch(setNotVisible(resourceRef))
+			}
+		})
 	))
 
 	const citations = useSelector(citationsById(refChain.map(ref => ref.id))) as TCitation[]
@@ -35,7 +42,7 @@ const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 			ref={ref} 
 			onMouseEnter={toggleHover}
 			onMouseLeave={toggleHover}
-			sx={{ backgroundColor: hasHover ? 'green' : 'transparent' }}
+			sx={{ backgroundColor: hasHover ? 'lightgreen' : 'transparent' }}
 		>
 			(
 				{

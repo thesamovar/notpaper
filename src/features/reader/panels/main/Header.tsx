@@ -1,5 +1,5 @@
 import FlexBox from "src/common/components/FlexBox";
-import {Author} from "src/features/paperPicker/paperPickerSlice";
+import {Author} from "src/common/types";
 
 interface HeaderProps {
 	title: string
@@ -14,7 +14,6 @@ interface HeaderProps {
  */
 const Header = ({ title, authors }: HeaderProps) => (
 	<FlexBox as="header" id="header" column>
-		<h1>{title}</h1>
 		{
 			authors.map(author => (
 				<p key={author}>{author}</p>

@@ -11,7 +11,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
 import {isRefChain} from 'src/common/util/guards';
 import {RootState} from '../../app/store';
-import {CanHover, CanPin, CitationRef, getActivePaper, RefChain, RelatedResourceKind, RelatedResourceRef} from '../paperPicker/paperPickerSlice';
+import {CanHover, CanPin, CitationRef, RefChain, RelatedResourceKind, RelatedResourceRef} from 'src/common/types';
+import {getActivePaper} from 'src/features/paper/paperSlice';
 
 ///////////////////
 //     STATE     //
@@ -26,7 +27,7 @@ export interface ReaderState {
 	}
 	visibleResources: {
 		[s in RelatedResourceKind]: {
-			[s: string]: boolean
+			[s: string]: number
 		}
 	}
 }
@@ -47,7 +48,7 @@ const initialState: ReaderState = {
 //     ACTION PAYLOADS     //
 /////////////////////////////
 
-export type SetVisiblePayload = RelatedResourceRef & { isVisible: boolean }
+export type SetVisiblePayload = RelatedResourceRef
 export type ToggleHoveredResourcePayload = CanHover
 export type SetPinnedPayload = RelatedResourceRef & { isPinned: boolean }
 
@@ -61,9 +62,27 @@ export const readerSlice = createSlice({
     initialState,
     reducers: {
       setIsVisible: (state, action: PayloadAction<SetVisiblePayload>) => {
-				const { kind, id, isVisible } = action.payload
-        state.visibleResources[kind][id] = isVisible
+				const { kind, id } = action.payload
+				const visibleResources = state.visibleResources[kind]
+				const visibleCount = visibleResources[id]  // Resources may appear multiple times so we keep a counter
+				if (typeof visibleCount == "number") {
+					state.visibleResources[kind][id] += 1
+				} else {
+					state.visibleResources[kind][id] = 1
+				}
       },
+			setNotVisible: (state, action: PayloadAction<SetVisiblePayload>) => {
+				const { kind, id } = action.payload
+				const visibleResources = state.visibleResources[kind]
+				const visibleCount = visibleResources[id]  // Resources may appear multiple times so we keep a counter
+				if (typeof visibleCount == "number") {
+					if (visibleCount === 0) {
+						return
+					} else {
+						state.visibleResources[kind][id] -= 1
+					}
+				}
+			},
 			toggleHoveredResource: (state, action: PayloadAction<ToggleHoveredResourcePayload>) => {
 				const isHovered = state.hoveredResources.some(ref => _.isEqual(ref, action.payload))
 				if (isHovered) {
@@ -83,7 +102,7 @@ export const readerSlice = createSlice({
 //     ACTIONS     //
 /////////////////////
 
-export const { pinResource, toggleHoveredResource, setIsVisible} = readerSlice.actions;
+export const { pinResource, toggleHoveredResource, setIsVisible, setNotVisible } = readerSlice.actions;
 
 ///////////////////////
 //     SELECTORS     //
@@ -173,7 +192,7 @@ export const resourceHasHover = (ref: CanHover) => (state: RootState) => {
  */
 export const citationChainHasHover = (chain: RefChain<CitationRef>) => (state: RootState) => {
 	if (isRefChain<CitationRef>(state.reader.hoveredResources)) {
-		return chain.every(ref => _.includes(state.reader.hoveredResources, ref))
+		return chain.some(ref => _.find(state.reader.hoveredResources, ref))
 	} else {
 		return false
 	}

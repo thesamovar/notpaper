@@ -5,9 +5,9 @@
 import {Box} from "@theme-ui/components"
 import {ReactNode} from "react"
 import {useSelector} from "react-redux"
-import {getActivePaper} from "../paperPicker/paperPickerSlice"
-import MainPanel from "./components/panels/MainPanel"
-import RelatedPanel from "./components/panels/RelatedPanel"
+import {getActivePaper} from "../paper/paperSlice"
+import MainPanel from "./panels/main/MainPanel"
+import RelatedPanel from "./panels/related/RelatedPanel"
 
 
 export interface ReaderProps {

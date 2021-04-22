@@ -5,7 +5,7 @@
 import {Box, Button} from "@theme-ui/components"
 import {ChangeEventHandler, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {getAllPaperIds, upload} from "./paperPickerSlice"
+import {getAllPaperIds, upload} from "./paperSlice"
 
 const PaperPicker = () => {
 	const dispatch = useDispatch()

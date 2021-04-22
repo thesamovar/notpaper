@@ -1,6 +1,6 @@
 import {FunctionComponent} from "react";
 import FlexBox from "src/common/components/FlexBox";
-import {Narrative as TNarrative} from "src/features/paperPicker/paperPickerSlice";
+import {Narrative as TNarrative} from "src/common/types";
 import Section from "./Section";
 
 interface NarrativeProps {
