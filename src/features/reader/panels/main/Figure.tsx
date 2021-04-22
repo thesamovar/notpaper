@@ -25,7 +25,7 @@ const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 		} else {
 			dispatch(setNotVisible(figureRef))
 		}
-	}, [])
+	}, [dispatch, figureRef])
 	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 	const figure = useSelector(figureById(figureRef.id)) as TFigure
 	const hasHover = useSelector(resourceHasHover(figureRef))

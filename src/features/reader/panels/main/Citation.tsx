@@ -25,7 +25,7 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 		} else {
 			dispatch(setNotVisible(citationRef))
 		}
-	}, [])
+	}, [citationRef, dispatch])
 	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 	const citation = useSelector(citationById(citationRef.id)) as TCitation
 	const hasHover = useSelector(resourceHasHover(citationRef))

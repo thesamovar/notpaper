@@ -9,7 +9,6 @@ import { MutableRefObject, useEffect } from "react"
 const useIsVisible = <T extends Element>(ref: MutableRefObject<T>, setVisible: (isVisible: boolean) => void) => {
 
   useEffect(() => {
-		console.log(`Observing ${ref.current?.className}`)
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting))
 		
@@ -21,7 +20,7 @@ const useIsVisible = <T extends Element>(ref: MutableRefObject<T>, setVisible: (
     return () => {
       observer.unobserve(refElement);
     };
-  }, [setVisible])
+  }, [setVisible, ref])
 }
 
 export default useIsVisible

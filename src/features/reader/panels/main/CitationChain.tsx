@@ -27,7 +27,7 @@ const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 				dispatch(setNotVisible(resourceRef))
 			}
 		})
-	}, [])
+	}, [dispatch, refChain])
 	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 
 	const citations = useSelector(citationsById(refChain.map(ref => ref.id))) as TCitation[]
