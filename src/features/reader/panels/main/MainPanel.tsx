@@ -21,6 +21,7 @@ const MainPanel = ({ paper }: MainPanelProps) => {
 		<FlexBox 
 			column 
 			sx={{ 
+				pt: 3,
 				px: 6,
 				width: "50%", 
 				overflowY: 'auto', 
