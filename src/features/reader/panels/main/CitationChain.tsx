@@ -1,5 +1,5 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useRef} from "react"
+import {FunctionComponent, useCallback, useRef} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Citation as TCitation, CitationRef, RefChain} from "src/common/types"
@@ -19,7 +19,7 @@ interface CitationChainProps {
 const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
-	useIsVisible<HTMLSpanElement>(ref, (isVisible) => (
+	const handleIsVisible = useCallback((isVisible: boolean) => {
 		refChain.forEach(resourceRef => {
 			if (isVisible) {
 				dispatch(setIsVisible(resourceRef))
@@ -27,7 +27,8 @@ const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 				dispatch(setNotVisible(resourceRef))
 			}
 		})
-	))
+	}, [])
+	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 
 	const citations = useSelector(citationsById(refChain.map(ref => ref.id))) as TCitation[]
 	const hasHover = useSelector(citationChainHasHover(refChain))

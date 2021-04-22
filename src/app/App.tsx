@@ -1,4 +1,3 @@
-import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import PaperPicker from 'src/features/paper/PaperPicker';
 import {getActivePaperId} from 'src/features/paper/paperSlice';

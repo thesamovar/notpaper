@@ -172,7 +172,7 @@ const opaque = [
   'rgba(0,0,0,0.5)'
 ]
 
-export default {
+const colors = {
   ...themeColors,
   ...utilityColors,
   ...brandColors,
@@ -180,3 +180,5 @@ export default {
   opaque,
   darken: darkenAll({primary: themeColors.primary, secondary: themeColors.secondary})
 }
+
+export default colors

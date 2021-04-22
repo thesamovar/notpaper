@@ -1,5 +1,5 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useRef} from "react"
+import {FunctionComponent, useCallback, useRef} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Figure as TFigure, FigureRef} from "src/common/types"
@@ -19,13 +19,14 @@ interface FigureProps {
 const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
-	useIsVisible<HTMLSpanElement>(ref, (isVisible) => {
+	const handleIsVisible = useCallback((isVisible: boolean) => {
 		if (isVisible) {
 			dispatch(setIsVisible(figureRef))
 		} else {
 			dispatch(setNotVisible(figureRef))
 		}
-	})
+	}, [])
+	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 	const figure = useSelector(figureById(figureRef.id)) as TFigure
 	const hasHover = useSelector(resourceHasHover(figureRef))
 
@@ -33,6 +34,7 @@ const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 
 	return (
 		<Box
+			className='fig'
 			as="span"
 			ref={ref} 
 			onMouseEnter={toggleHover}

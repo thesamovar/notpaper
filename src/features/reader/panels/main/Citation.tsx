@@ -1,5 +1,5 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useRef} from "react"
+import {FunctionComponent, useCallback, useRef} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Citation as TCitation, CitationRef} from "src/common/types"
@@ -19,13 +19,14 @@ interface CitationProps {
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
-	useIsVisible<HTMLSpanElement>(ref, (isVisible) => {
+	const handleIsVisible = useCallback((isVisible: boolean) => {
 		if (isVisible) {
 			dispatch(setIsVisible(citationRef))
 		} else {
 			dispatch(setNotVisible(citationRef))
 		}
-	})
+	}, [])
+	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
 	const citation = useSelector(citationById(citationRef.id)) as TCitation
 	const hasHover = useSelector(resourceHasHover(citationRef))
 
@@ -33,6 +34,7 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 
 	return (
 		<Box
+			className="cit"
 			as="span"
 			ref={ref} 
 			onMouseEnter={toggleHover}

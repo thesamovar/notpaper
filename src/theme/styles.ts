@@ -1,6 +1,6 @@
 import { heading } from './typography'
 
-export default {
+const styles = {
   root: {
     margin: 0,
     fontSize: ['14px', '14px', '14px', '15px', '16px'],
@@ -55,3 +55,5 @@ export default {
     m: 3
   }
 }
+
+export default styles

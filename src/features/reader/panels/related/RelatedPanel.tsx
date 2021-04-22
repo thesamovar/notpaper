@@ -3,7 +3,6 @@
  */
 
 import {Box} from "@theme-ui/components";
-import _ from "lodash";
 import {FunctionComponent} from "react";
 import {useSelector} from "react-redux";
 import {isCitationRef, isFigureRef} from "src/common/util/guards";
