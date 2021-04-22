@@ -27,7 +27,7 @@ export interface ReaderState {
 	}
 	visibleResources: {
 		[s in RelatedResourceKind]: {
-			[s: string]: number
+			[s: string]: string[]
 		}
 	}
 }
@@ -48,7 +48,7 @@ const initialState: ReaderState = {
 //     ACTION PAYLOADS     //
 /////////////////////////////
 
-export type SetVisiblePayload = RelatedResourceRef
+export type SetVisiblePayload = RelatedResourceRef & { componentId: string }
 export type ToggleHoveredResourcePayload = CanHover
 export type SetPinnedPayload = RelatedResourceRef & { isPinned: boolean }
 
@@ -62,24 +62,26 @@ export const readerSlice = createSlice({
     initialState,
     reducers: {
       setIsVisible: (state, action: PayloadAction<SetVisiblePayload>) => {
-				const { kind, id } = action.payload
+				const { kind, id, componentId } = action.payload
 				const visibleResources = state.visibleResources[kind]
-				const visibleCount = visibleResources[id]  // Resources may appear multiple times so we keep a counter
-				if (typeof visibleCount == "number") {
-					state.visibleResources[kind][id] += 1
+				const visibleComponents = visibleResources[id]  // Resources may appear multiple times in separate components
+				if (Array.isArray(visibleComponents)) {
+					visibleComponents.push(componentId)
 				} else {
-					state.visibleResources[kind][id] = 1
+					state.visibleResources[kind][id] = [componentId]
 				}
       },
 			setNotVisible: (state, action: PayloadAction<SetVisiblePayload>) => {
-				const { kind, id } = action.payload
+				const { kind, id, componentId } = action.payload
 				const visibleResources = state.visibleResources[kind]
-				const visibleCount = visibleResources[id]  // Resources may appear multiple times so we keep a counter
-				if (typeof visibleCount == "number") {
-					if (visibleCount === 0) {
+				const visibleComponents = visibleResources[id]  // Resources may appear multiple times in separate components
+				if (Array.isArray(visibleComponents)) {
+					if (visibleComponents.length === 0) {
+						// No components, so do nothing
+						console.log(`visibleComponents length is 0`)
 						return
 					} else {
-						state.visibleResources[kind][id] -= 1
+						state.visibleResources[kind][id] = visibleComponents.filter(id => id !== componentId)
 					}
 				}
 			},
@@ -126,7 +128,7 @@ export const selectVisibleResources = (state: RootState): Array<RelatedResourceR
 	return (Object.keys(visibleResources) as Array<keyof typeof visibleResources>)
 		.flatMap(kind => (
 			Object.entries(visibleResources[kind])
-				.filter(([_, isVisible]) => !!isVisible)
+				.filter(([_, componentIds]) => Array.isArray(componentIds) && componentIds.length > 0)
 				.flatMap(([id, _]) => ({kind, id}))
 		))
 }

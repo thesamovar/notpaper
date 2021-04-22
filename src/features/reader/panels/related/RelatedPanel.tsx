@@ -46,7 +46,7 @@ const RelatedPanel = () => {
 	const resources = useSelector(selectRelatedResources)
 
 	return (
-		<Box sx={{ width: "50%", p: 3 }}>
+		<Box sx={{ width: "50%", height: '100vh', p: 3, overflowY: 'scroll' }}>
 			{
 				resources.map((resource, i) => (
 					<RelatedResource key={i} resource={resource} />

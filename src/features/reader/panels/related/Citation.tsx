@@ -19,14 +19,12 @@ interface CitationProps {
  * @returns 							A padded FlexBox containing the long-form of the citation
  */
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
-	const dispatch = useDispatch()
+	const dispatch = useDispatch()  // Used to trigger a state-update
 	const citation = useSelector(citationById(citationRef.id)) as TCitation
 	const hasHover = useSelector(resourceHasHover(citationRef))
 	const isPinned = useSelector(resourceIsPinned(citationRef))
 
-	const togglePinned = () => {
-		dispatch(pinResource({ ...citationRef, isPinned: !isPinned }))
-	}
+	const togglePinned = () => dispatch(pinResource({ ...citationRef, isPinned: !isPinned }))
 	const toggleHover = () => dispatch(toggleHoveredResource(citationRef))
 
 	return (
@@ -34,14 +32,23 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 			sx={{ 
 			  p: '10px', 
 				mb: 1,
+				minHeight: hasHover ? '200px' : 'unset',
 				borderRadius: '10px',
 				backgroundColor: hasHover ? 'lightgreen' : '#eeeeee' 
 			}}
+			column
 			onClick={togglePinned}
 			onMouseEnter={toggleHover}
 			onMouseLeave={toggleHover}
 		>
 			{ citation.text }
+			{
+				hasHover && (
+					<FlexBox sx={{ pt: 3 }}>
+						Abstract goes here...
+					</FlexBox>
+				)
+			}
 		</FlexBox>
 	)
 }

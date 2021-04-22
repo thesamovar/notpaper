@@ -1,5 +1,6 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useCallback, useRef} from "react"
+import _ from "lodash"
+import {FunctionComponent, useCallback, useRef, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Citation as TCitation, CitationRef, RefChain} from "src/common/types"
@@ -19,14 +20,16 @@ interface CitationChainProps {
  * @returns 						A span containing a concatenation of each citation's short-form together
  */
 const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
+	const [componentId] = useState(_.uniqueId('refChain-'))  // Used to keep track of duplicate citations on-screen
+
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
 	const handleIsVisible = useCallback((isVisible: boolean) => {
 		refChain.forEach(resourceRef => {
 			if (isVisible) {
-				dispatch(setIsVisible(resourceRef))
+				dispatch(setIsVisible({ componentId, ...resourceRef }))
 			} else {
-				dispatch(setNotVisible(resourceRef))
+				dispatch(setNotVisible({ componentId, ...resourceRef }))
 			}
 		})
 	}, [dispatch, refChain])

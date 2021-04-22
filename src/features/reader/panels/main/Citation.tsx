@@ -1,6 +1,8 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useCallback, useRef} from "react"
+import _ from "lodash"
+import {FunctionComponent, useCallback, useRef, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
+import ReactTooltip from "react-tooltip"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Citation as TCitation, CitationRef} from "src/common/types"
 import { citationById } from "src/features/paper/paperSlice"
@@ -19,13 +21,15 @@ interface CitationProps {
  * @returns 								A span containing the short-form of the citation
  */
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
+	const [componentId] = useState(_.uniqueId('citation-'))  // Used to keep track of duplicate citations on-screen
+
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
 	const handleIsVisible = useCallback((isVisible: boolean) => {
 		if (isVisible) {
-			dispatch(setIsVisible(citationRef))
+			dispatch(setIsVisible({ componentId, ...citationRef }))
 		} else {
-			dispatch(setNotVisible(citationRef))
+			dispatch(setNotVisible({ componentId, ...citationRef }))
 		}
 	}, [citationRef, dispatch])
 	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
@@ -35,16 +39,22 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 	const toggleHover = () => dispatch(toggleHoveredResource(citationRef))
 
 	return (
-		<Box
-			className="cit"
-			as="span"
-			ref={ref} 
-			onMouseEnter={toggleHover}
-			onMouseLeave={toggleHover}
-			sx={{ backgroundColor: hasHover ? 'lightgreen' : 'transparent' }}
-		>
-			({citation.shortForm})
-		</Box>
+		<span>
+			<Box
+				className="cit"
+				as="span"
+				ref={ref}
+				onMouseEnter={toggleHover}
+				onMouseLeave={toggleHover}
+				sx={{ backgroundColor: hasHover ? 'lightgreen' : 'transparent' }}
+				data-tip
+			>
+				({citation.shortForm})
+			</Box>
+			<ReactTooltip place="top" type="dark" effect="solid">
+				Lorem ipsum....
+			</ReactTooltip>
+		</span>
 	)
 }
 

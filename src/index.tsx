@@ -1,3 +1,4 @@
+import {Global} from '@emotion/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
@@ -7,11 +8,14 @@ import {store} from './app/store';
 import reportWebVitals from './reportWebVitals';
 import notpaper from './theme';
 
+const styles = {}
+
 ReactDOM.render(
   <React.StrictMode>
       <Provider store={store}>
           <ThemeProvider theme={notpaper}>
-              <App />
+						<Global styles={styles} />
+						<App />
           </ThemeProvider>
       </Provider>
   </React.StrictMode>,

@@ -1,5 +1,6 @@
 import {Box} from "@theme-ui/components"
-import {FunctionComponent, useCallback, useRef} from "react"
+import _ from "lodash"
+import {FunctionComponent, useCallback, useRef, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import useIsVisible from "src/common/hooks/useIsVisible"
 import {Figure as TFigure, FigureRef} from "src/common/types"
@@ -19,13 +20,15 @@ interface FigureProps {
  * @returns 							A span containing the short-form of the figure
  */
 const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
+	const [componentId] = useState(_.uniqueId('figure-'))  // Used to keep track of duplicate citations on-screen
+
 	const ref: any = useRef<HTMLSpanElement>()
 	const dispatch = useDispatch()
 	const handleIsVisible = useCallback((isVisible: boolean) => {
 		if (isVisible) {
-			dispatch(setIsVisible(figureRef))
+			dispatch(setIsVisible({ componentId, ...figureRef }))
 		} else {
-			dispatch(setNotVisible(figureRef))
+			dispatch(setNotVisible({ componentId, ...figureRef }))
 		}
 	}, [dispatch, figureRef])
 	useIsVisible<HTMLSpanElement>(ref, handleIsVisible)
