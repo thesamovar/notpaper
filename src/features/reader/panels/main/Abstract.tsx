@@ -9,6 +9,7 @@ interface AbstractProps {
  * Renders the abstract of the research paper.
  *
  * @param abstract 		The string text of the abstract.
+ * @returns 					A FlexBox rendering the title "Abstract" and the text content of the abstract
  */
 const Abstract: FunctionComponent<AbstractProps> = ({ abstract }) => (
 	<FlexBox as="section" id="abstract" column>

@@ -4,7 +4,9 @@ import {getActivePaperId} from 'src/features/paper/paperSlice';
 import Reader from 'src/features/reader/Reader';
 
 /*
- * Entrypoint
+ * App Entrypoint
+ *
+ * Renders the Reader if a paper has been selected, otherwise a PaperPicker so the user can select a paper
  */
 function App() {
 	const hasActivePaper = !!useSelector(getActivePaperId)

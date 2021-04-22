@@ -15,6 +15,16 @@ import Figure from "./Figure";
 interface RelatedResourceProps {
 	resource: RelatedResourceRef
 }
+
+/**
+ * Renders a related resource, by discriminating its kind and then choosing the correct Component
+ *
+ * @param resourceRef 	The resourceRef to be rendered
+ *
+ * @returns Citation 		The resourceRef is a CitationRef
+ * @returns Figure 			The resourceRef is a FigureRef
+ * @returns null 				The kind of the resourceRef is not valid
+ */
 const RelatedResource: FunctionComponent<RelatedResourceProps> = ({ resource }) => {
 	if (isCitationRef(resource)) {
 		return <Citation citationRef={resource} />
@@ -27,6 +37,11 @@ const RelatedResource: FunctionComponent<RelatedResourceProps> = ({ resource }) 
 }
 
 
+/**
+ * Renders the RelatedPanel, showing resources from the paper
+ *
+ * @returns RelatedResource 		A component which can discriminate and render the resource
+ */
 const RelatedPanel = () => {
 	const resources = useSelector(selectRelatedResources)
 

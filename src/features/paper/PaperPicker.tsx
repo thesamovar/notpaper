@@ -7,6 +7,13 @@ import {ChangeEventHandler, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import {getAllPaperIds, upload} from "./paperSlice"
 
+/**
+ * WORK-IN-PROGRESS
+ *
+ * Renders a selection of papers for the user to choose from.
+ *
+ * @returns 			A list of papers, and an upload button for the user to upload a LaTeX file.
+ */
 const PaperPicker = () => {
 	const dispatch = useDispatch()
 	const [selectedFile, setSelectedFile] = useState<File>()

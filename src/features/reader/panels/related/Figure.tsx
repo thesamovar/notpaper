@@ -11,6 +11,12 @@ interface FigureProps {
 	figureRef: FigureRef
 }
 
+/**
+ * Renders a figure from the paper as a related resource.
+ *
+ * @param figureRef 		A resourceRef of kind 'figure'
+ * @returns 						A padded FlexBox containing the figure as an image
+ */
 const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 	const dispatch = useDispatch()
 	const figure = useSelector(figureById(figureRef.id)) as TFigure

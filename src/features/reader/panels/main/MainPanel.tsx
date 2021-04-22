@@ -1,3 +1,4 @@
+import {Heading} from "@theme-ui/components"
 import FlexBox from "src/common/components/FlexBox"
 import {AbstractPaper} from "src/common/types"
 import Abstract from "./Abstract"
@@ -10,9 +11,10 @@ interface MainPanelProps {
 }
 
 /**
- * The main reading panel, on the left-hand side
+ * The main reading panel.
  *
  * @param paper 		The paper the user is reading
+ * @returns 				A vertical FlexBox containing each part of the paper
  */
 const MainPanel = ({ paper }: MainPanelProps) => {
 	return (
@@ -25,7 +27,7 @@ const MainPanel = ({ paper }: MainPanelProps) => {
 				height: '100vh' 
 			}}
 		>
-			<h1>{paper.title}</h1>
+			<Heading>{paper.title}</Heading>
 			<Authors {...paper} />
 			<Abstract {...paper} />
 			<Narrative {...paper} />

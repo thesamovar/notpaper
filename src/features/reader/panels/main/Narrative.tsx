@@ -8,9 +8,10 @@ interface NarrativeProps {
 }
 
 /**
- * Renders the narrative of the paper, which is a series of paragraphs, citations, and figures
+ * Renders the narrative of the paper, which is a series of sections that contain paragraphs
  *
- * @param narrative 		A sequence of references to paragraphs, citations, and figures
+ * @param narrative 		A sequence Sections, referencing paragraphs
+ * @returns 						A FlexBox containing one Section per-paragraph
  */
 const Narrative: FunctionComponent<NarrativeProps> = ({ narrative }) => (
 	<FlexBox id="narrative" column>

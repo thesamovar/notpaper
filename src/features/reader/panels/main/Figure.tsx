@@ -14,7 +14,9 @@ interface FigureProps {
  * Renders the short form of a figure in the main reading panel of the paper.
  *
  * If the user hovers over this component, it will be highlighted in the "related" panel.
+ *
  * @param figureRef 			The reference to the figure
+ * @returns 							A span containing the short-form of the figure
  */
 const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 	const ref: any = useRef<HTMLSpanElement>()

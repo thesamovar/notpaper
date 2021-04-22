@@ -10,6 +10,7 @@ interface AuthorsProps {
  * Renders the authors of the paper
  *
  * @param authors 	An array of author references
+ * @returns 				A FlexBox containing one Box per-author
  */
 const Authors = ({ authors }: AuthorsProps) => (
 	<FlexBox as="div" id="authors">

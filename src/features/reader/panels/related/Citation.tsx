@@ -10,6 +10,14 @@ interface CitationProps {
 	citationRef: CitationRef
 }
 
+
+/**
+ * Renders a citation as a related resource.
+ *
+ * @param citationRef 		A ResourceRef with kind 'citation'
+ * 
+ * @returns 							A padded FlexBox containing the long-form of the citation
+ */
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 	const dispatch = useDispatch()
 	const citation = useSelector(citationById(citationRef.id)) as TCitation

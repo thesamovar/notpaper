@@ -1,16 +1,13 @@
 /**
- * Types
+ * Paper Types
+ *
+ * This is the definition of the AbstractPaper data format. It's easiest to start 
+ * 	at the bottom of the file with AbstractPaper, and work your way upwards.
  */ 
 
-export type Optional<T> = T | undefined
+type ID = string
 
-// Paper ////////////////////////////////////////
-
-export type Abstract = string
-export type Author = string
-export type ID = string
-
-// Resources
+// Resource Reference Types
 export interface ResourceRef {
 	kind: 'citation' | 'figure' | 'paragraph'
 	id: ID
@@ -27,17 +24,16 @@ export interface ParagraphRef extends ResourceRef {
 	kind: 'paragraph'
 }
 
+// Resource Reference Utility Types
+
 export type RelatedResourceRef = CitationRef | FigureRef
 export type RefChain<T extends ResourceRef> = T[]
 export type CanHover = RelatedResourceRef
 export type CanPin = RelatedResourceRef
+export type ResourceKey = keyof Resources
+export type RelatedResourceKind = Exclude<ResourceKey, 'paragraph'>
 
-// Components of a Section
-
-export type Section = {
-	title: string,
-	paragraphs: RefChain<ParagraphRef>
-}
+// Resource Contents Types
 
 export type ParagraphItem = string | CitationRef | RefChain<CitationRef> | FigureRef
 export interface Paragraph {
@@ -57,14 +53,26 @@ export type Citation = {
 	shortForm: string
 }
 
-export type Narrative = Section[]
+export type Section = {
+	title: string,
+	paragraphs: RefChain<ParagraphRef>
+}
 
+
+// AbstractPaper Top-Level Types
+
+export type Abstract = string
+export type Author = string
+export type Narrative = Section[]
 export type Resources = {
 	paragraph: { [i: string]: Paragraph }
 	figure: { [i: string]: Figure }
 	citation: { [i: string]: Citation }
 
 }
+
+// AbstractPaper Type
+
 export interface AbstractPaper {
 	title: string
 	abstract: Abstract
@@ -72,21 +80,4 @@ export interface AbstractPaper {
 	narrative: Narrative
 	resources: Resources
 }
-export type ResourceKeys = keyof Resources
-export type RelatedResourceKind = Exclude<ResourceKeys, 'paragraph'>
-
-
-type NarrativeStep = {
-	kind: 'concept' | 'question' | 'figure'
-	id: string
-}
-type AbstractResearch = {
-	questions: string[]
-	concepts: string[]
-	arguments: string[]
-	figures: { [i: string]: Figure }
-	narrative: NarrativeStep[]
-	references: Citation
-}
-
 

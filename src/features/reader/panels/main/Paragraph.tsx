@@ -13,6 +13,7 @@ interface ParagraphProps {
  *
  * This is comprised of abstract "paragraph items", to allow for citation components to be embedded.
  * @param paragraphRef 			The paragraph to be rendered
+ * @returns 								The paragraph's contents which is a series of strings and ResourceRefs
  */
 const Paragraph: FunctionComponent<ParagraphProps> = ({ paragraphRef }) => {
 	const paragraph = useSelector(paragraphById(paragraphRef.id)) as TParagraph

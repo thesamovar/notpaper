@@ -14,7 +14,9 @@ interface CitationProps {
  * Renders the short form of a citation in the main reading panel of the paper.
  *
  * If the user hovers over this component, it will be highlighted in the "related" panel.
+ *
  * @param citationRef 			The reference to the resource being rendered
+ * @returns 								A span containing the short-form of the citation
  */
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 	const ref: any = useRef<HTMLSpanElement>()

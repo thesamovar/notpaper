@@ -14,7 +14,9 @@ interface CitationChainProps {
  * Renders a chain of citations in short-form
  *
  * If the user hovers over this component, the citations will be highlighted in the "related" panel.
+ *
  * @param refChain 			The citations to be rendered
+ * @returns 						A span containing a concatenation of each citation's short-form together
  */
 const CitationChain: FunctionComponent<CitationChainProps> = ({ refChain }) => {
 	const ref: any = useRef<HTMLSpanElement>()

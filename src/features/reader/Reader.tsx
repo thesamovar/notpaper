@@ -13,6 +13,17 @@ import RelatedPanel from "./panels/related/RelatedPanel"
 export interface ReaderProps {
 	panels: ReactNode[]
 }
+
+/**
+ * Render the multi-panel reader
+ *
+ * Panels:
+ * 		MainPanel 		Renders the paper by its narrative
+ * 		RelatedPanel 	Renders the related resources from the paper
+ *
+ * @returns A Box containing the panels of the reader
+ *
+ */
 const Reader = () => {
 
 	const activePaper = useSelector(getActivePaper)

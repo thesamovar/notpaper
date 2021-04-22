@@ -10,7 +10,8 @@ interface SectionProps {
 /**
  * A section of the narrative of the paper
  *
- * @param section 		A data structure containing a title and a sequence of resources (e.g. paragraphs)
+ * @param section 		A data structure containing a title and a sequence of paragraphs
+ * @returns 					A FlexBox rendering the title of the section and its paragraphs
  */
 const Section: FunctionComponent<SectionProps> = ({ section }) => (
 	<FlexBox as="section" column>

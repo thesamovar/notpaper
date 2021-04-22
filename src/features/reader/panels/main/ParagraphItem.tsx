@@ -10,9 +10,14 @@ interface ParagraphItemProps {
 }
 
 /**
- * A constituent piece of a paragraph, which can be a string or a citation
+ * A constituent piece of a paragraph, which can be a string, citation, or chain of citations
  *
- * @param item 			A string of text, or a citation reference
+ * @param item 							A string of text, a citation, or a chain of citations
+ *
+ * @returns Citation 				The item is a ref of kind 'citation' 
+ * @returns CitationChain 	The item is a chain of 'citation' refs
+ * @returns Figure 					The item is a ref of kind 'figure' 
+ * @returns null 						The item is not a valid ref
  */
 const ParagraphItem: FunctionComponent<ParagraphItemProps> = ({ item }) => {
 	if (isText(item)) {
