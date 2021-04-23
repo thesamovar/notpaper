@@ -109,9 +109,30 @@ document.querySelectorAll(".csl-entry").forEach(elem => {
 });
 
 // Set all citations to have a related item
+// document.querySelectorAll(".citation").forEach(elem => {
+//     elem.classList.add("hasRelated");
+//     elem.dataset.related = elem.dataset.cites.split(' ').map(function(a) { return '#ref-'+a; }).join(',');
+// });
+
+// Set all citations to have a tooltip
 document.querySelectorAll(".citation").forEach(elem => {
-    elem.classList.add("hasRelated");
-    elem.dataset.related = elem.dataset.cites.split(' ').map(function(a) { return '#ref-'+a; }).join(',');
+    //document.querySelectorAll(".csl-entry[]")
+    const newdiv = document.createElement('div');
+    elem.dataset.cites.split(" ").forEach(id => {
+        const newcite = document.querySelector("#ref-"+id).cloneNode(true);
+        newcite.style.display = "block";
+        newdiv.appendChild(newcite);
+    });
+    tippy(elem, {content: newdiv,
+                 //animation: "shift-away",
+                 duration: 0,
+                 interactive: true,
+                 interactiveBorder: 30,
+                 //interactiveDebounce: 75,
+                 theme: 'light-border',
+                 placement: 'right',
+                 maxWidth: '50vw'
+                });
 });
 
 // Which figures are referred to?
