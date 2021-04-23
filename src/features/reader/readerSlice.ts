@@ -7,7 +7,7 @@
  * Actions:
  *     selectPaper:     When a paper is selected for reading
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
 import {isRefChain} from 'src/common/util/guards';
 import {RootState} from '../../app/store';
@@ -78,7 +78,6 @@ export const readerSlice = createSlice({
 				if (Array.isArray(visibleComponents)) {
 					if (visibleComponents.length === 0) {
 						// No components, so do nothing
-						console.log(`visibleComponents length is 0`)
 						return
 					} else {
 						state.visibleResources[kind][id] = visibleComponents.filter(id => id !== componentId)
