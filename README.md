@@ -1,18 +1,16 @@
-# notpaper
+# notpaper (react)
+
+Requirements:
+`node`
+`npm`
 
 Installation:
 
-```
-conda create -n notpaper python=3 poppler
-conda activate notpaper
-pip install pdf2image
-```
+`npm install`
 
 Usage:
 
-```
-conda activate notpaper
-python scripts/notpaperise.py sourcefile.tex --target destfile.html
-```
+`npm run start`
 
-This will be improved when things stabilise a bit.
+This will launch the webapp in your browser. If you make any code changes, they will be automatically re-loaded in the
+webpage.
