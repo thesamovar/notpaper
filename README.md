@@ -1,14 +1,19 @@
 # notpaper (react)
 
-Requirements:
-`node`
+## Requirements
+`node`  
 `npm`
 
-Installation:
+Installing [NodeJS](https://nodejs.org/en/) should also install npm. You can run `node -v` and `npm -v` to check that
+they are installed correctly. `npm` is a package manager for NodeJS, roughly analogous to `pip` (or rather `poetry`).
+
+## Installation
 
 `npm install`
 
-Usage:
+This will install the dependencies from the `package.json` and `package-lock.json`, into `node_modules/`.
+
+## Usage
 
 `npm run start`
 
