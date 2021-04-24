@@ -38,7 +38,7 @@ const Pin: FunctionComponent<PinProps> = ({ onClick, sx }) => {
 			onMouseEnter={() => setHasHover(true)}
 			onMouseLeave={() => setHasHover(false)}
 		>
-			<FaThumbtack style={{ rotate: '45deg' }} />
+			<FaThumbtack />
 		</Box>
 		)
 }
