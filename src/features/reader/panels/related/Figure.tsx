@@ -43,10 +43,8 @@ const Figure: FunctionComponent<FigureProps> = ({ figureRef }) => {
 				mb: 1,
 				borderRadius: '10px',
 				backgroundColor: hasHover ? 'lightgreen' : '#eeeeee',
-				cursor: 'pointer',
 				position: 'relative'
 			}}
-			onClick={togglePinned}
 			onMouseEnter={mouseEnter}
 			onMouseLeave={mouseLeave}
 		>

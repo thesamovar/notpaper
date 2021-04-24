@@ -51,7 +51,7 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 			>
 				({citation.shortForm})
 			</Box>
-			<ReactTooltip place="top" type="dark" effect="solid">
+			<ReactTooltip place="top" type="dark" effect="float">
 				Lorem ipsum....
 			</ReactTooltip>
 		</span>

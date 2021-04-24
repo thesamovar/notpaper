@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react"
+import {FunctionComponent, MouseEvent, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import FlexBox from "src/common/components/FlexBox"
 import {Citation as TCitation, CitationRef} from "src/common/types"
@@ -28,7 +28,8 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 	const isPinned = useSelector(resourceIsPinned(citationRef))
 	const shouldShowPin = hasHover || isPinned
 
-	const togglePinned = () => {
+	const togglePinned = (e: MouseEvent) => {
+		e.stopPropagation()  // So that the parent element's onClick doesn't also trigger
 		dispatch(pinResource({ ...citationRef, isPinned: !isPinned }))
 		if (hasHover) {
 			// We do this because the mouseLeave event won't trigger
@@ -52,7 +53,7 @@ const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
 				cursor: 'pointer'
 			}}
 			column
-			onClick={togglePinned}
+			onClick={toggleExpand}
 			onMouseEnter={mouseEnter}
 			onMouseLeave={mouseLeave}
 		>

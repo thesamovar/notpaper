@@ -1,11 +1,11 @@
 import {Box} from "@theme-ui/components"
 import {ThemeUICSSObject} from "@theme-ui/css"
-import {FunctionComponent, useState} from "react"
+import {FunctionComponent, MouseEvent, useState} from "react"
 import {FaThumbtack} from "react-icons/fa"
 
 
 interface PinProps {
-	onClick: () => void
+	onClick: (e: MouseEvent) => void
 	sx?: ThemeUICSSObject
 }
 
