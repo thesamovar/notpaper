@@ -2,12 +2,12 @@
  * FlexBox
  */
 
-import {Flex, FlexProps} from "@theme-ui/components";
-import {ThemeUICSSObject} from "@theme-ui/css";
+import { Flex, FlexProps } from '@theme-ui/components'
+import { ThemeUICSSObject } from '@theme-ui/css'
 
 interface FlexBoxProps extends FlexProps {
-	column?: boolean
-	sx?: ThemeUICSSObject
+  column?: boolean
+  sx?: ThemeUICSSObject
 }
 
 /**
@@ -20,14 +20,14 @@ interface FlexBoxProps extends FlexProps {
  * @returns 					A FlexBox
  */
 const FlexBox = ({ column, sx, ...props }: FlexBoxProps) => (
-	<Flex 
-		{...props} 
-		sx={{
-			...sx,
-			display: "flex",
-			flexDirection: column ? "column" : "row",
-		}}
-	/>
+  <Flex
+    {...props}
+    sx={{
+      ...sx,
+      display: 'flex',
+      flexDirection: column ? 'column' : 'row',
+    }}
+  />
 )
 
 export default FlexBox

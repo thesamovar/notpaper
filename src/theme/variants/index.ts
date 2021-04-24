@@ -3,5 +3,5 @@ import nav from './nav'
 
 export default {
   alertBar,
-  nav
+  nav,
 }

@@ -1,10 +1,10 @@
-import {FunctionComponent} from "react";
-import FlexBox from "src/common/components/FlexBox";
-import {Section as TSection} from "src/common/types";
-import Paragraph from "./Paragraph";
+import { FunctionComponent } from 'react'
+import FlexBox from 'src/common/components/FlexBox'
+import { Section as TSection } from 'src/common/types'
+import Paragraph from './Paragraph'
 
 interface SectionProps {
-	section: TSection
+  section: TSection
 }
 
 /**
@@ -14,14 +14,12 @@ interface SectionProps {
  * @returns 					A FlexBox rendering the title of the section and its paragraphs
  */
 const Section: FunctionComponent<SectionProps> = ({ section }) => (
-	<FlexBox as="section" column>
-		<h2>{section.title}</h2>
-		{
-			section.paragraphs.map((ref, i) => (
-				<Paragraph key={i} paragraphRef={ref} />
-			))
-		}
-	</FlexBox>
+  <FlexBox as="section" column>
+    <h2>{section.title}</h2>
+    {section.paragraphs.map((ref, i) => (
+      <Paragraph key={i} paragraphRef={ref} />
+    ))}
+  </FlexBox>
 )
 
 export default Section

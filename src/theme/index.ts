@@ -1,19 +1,9 @@
-import {
-  borderWidths,
-  breakpoints,
-  sizes,
-  space
-} from './layout'
-import {
-  fontSizes,
-  fonts,
-  letterSpacings,
-  lineHeights
-} from './typography'
+import { borderWidths, breakpoints, sizes, space } from './layout'
+import { fontSizes, fonts, letterSpacings, lineHeights } from './typography'
 import { radii, shadows } from './misc'
 import styles from './styles'
 import colors from './colors'
-import {Theme} from 'theme-ui'
+import { Theme } from 'theme-ui'
 
 export const notpaper: Theme = {
   borderWidths,

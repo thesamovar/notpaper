@@ -1,11 +1,11 @@
-import rem from "./rem";
+import rem from './rem'
 
 export const borderWidths = {
   px: '1px',
   0: '0',
   2: '2px',
   4: '4px',
-  8: '8px'
+  8: '8px',
 }
 
 // export const breakpoints = {
@@ -16,13 +16,7 @@ export const borderWidths = {
 //   xl: 1200
 // }
 
-export const breakpoints = [
-  '576px',
-  '768px',
-  '992px',
-  '1200px',
-  '1500px'
-]
+export const breakpoints = ['576px', '768px', '992px', '1200px', '1500px']
 
 const spacing = {
   px: '1px',
@@ -43,7 +37,7 @@ const spacing = {
   40: rem(10),
   48: rem(12),
   56: rem(14),
-  64: rem(16)
+  64: rem(16),
 }
 
 const maxWidth = {
@@ -56,7 +50,7 @@ const maxWidth = {
   '3xl': rem(48),
   '4xl': rem(56),
   '5xl': rem(64),
-  '6xl': rem(72)
+  '6xl': rem(72),
 }
 
 const width = {
@@ -87,7 +81,7 @@ const width = {
   '8/12': '66.666667%',
   '9/12': '75%',
   '10/12': '83.333333%',
-  '11/12': '91.666667%'
+  '11/12': '91.666667%',
 }
 
 export const sizes = {
@@ -96,7 +90,7 @@ export const sizes = {
   ...width,
   full: '100%',
   screenHeight: '100vh',
-  screenWidth: '100vw'
+  screenWidth: '100vw',
 }
 
 export const space = [
@@ -106,12 +100,12 @@ export const space = [
   rem(0.5),
   rem(1),
   rem(1.5),
-  rem(2),     // 5
+  rem(2), // 5
   rem(2.5),
   rem(3),
-  rem(4),     // 8
+  rem(4), // 8
   rem(8),
-  rem(12),    // 10
+  rem(12), // 10
   rem(16),
-  rem(32)
+  rem(32),
 ]

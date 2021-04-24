@@ -4,7 +4,7 @@ import { Theme } from '../types'
 export default (theme: Theme) => ({
   gradient: {
     background: themeGet('colors.gradient')({ theme }),
-    color: 'white'
+    color: 'white',
   },
   light: {
     backgroundColor: 'light',
@@ -28,7 +28,7 @@ export default (theme: Theme) => ({
     borderStyle: 'solid',
     borderWidth: '2px',
     borderColor: 'primary',
-    color: 'primary'
+    color: 'primary',
   },
   outline: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -39,6 +39,6 @@ export default (theme: Theme) => ({
   },
   discord: {
     backgroundColor: 'discord',
-    color: 'white'
-  }
+    color: 'white',
+  },
 })

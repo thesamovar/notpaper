@@ -1,9 +1,9 @@
-import rem from "./rem";
+import rem from './rem'
 
 export const fonts = {
   body: '"Inter", sans-serif',
   heading: '"Inter", sans-serif',
-  monospace: 'Menlo, Monaco'
+  monospace: 'Menlo, Monaco',
 }
 
 export const fontSizes = [
@@ -21,7 +21,7 @@ export const fontSizes = [
   rem(5),
   rem(6),
   rem(8),
-  rem(10)
+  rem(10),
 ]
 
 const baseFontWeights = {
@@ -33,14 +33,14 @@ const baseFontWeights = {
   semibold: '600',
   bold: '700',
   extrabold: '800',
-  black: '900'
+  black: '900',
 }
 
 export const fontWeights = {
   ...baseFontWeights,
   body: baseFontWeights.normal,
   heading: baseFontWeights.bold,
-  button: baseFontWeights.bold
+  button: baseFontWeights.bold,
 }
 
 /// Text ///
@@ -51,13 +51,13 @@ const baseLineHeights = {
   snug: '1.375',
   normal: '1.5',
   relaxed: '1.625',
-  loose: '2'
+  loose: '2',
 }
 
 export const lineHeights = {
   ...baseLineHeights,
   body: baseLineHeights.relaxed,
-  heading: baseLineHeights.tight
+  heading: baseLineHeights.tight,
 }
 
 export const letterSpacings = {
@@ -66,7 +66,7 @@ export const letterSpacings = {
   normal: '0',
   wide: rem(0.025),
   wider: rem(0.05),
-  widest: rem(0.1)
+  widest: rem(0.1),
 }
 
 export const heading = {
@@ -74,5 +74,5 @@ export const heading = {
   fontWeight: 'heading',
   lineHeight: 'heading',
   m: 0,
-  mb: 1
+  mb: 1,
 }

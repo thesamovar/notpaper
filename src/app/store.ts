@@ -3,7 +3,7 @@
  *
  * The store controls the state of the app (e.g. which resources the user has pinned).
  *
- * The state is a Javascript object, split into distinct "slices". Each slice is handled by a reducer. 
+ * The state is a Javascript object, split into distinct "slices". Each slice is handled by a reducer.
  * When an action is dispatched to the store, it is passed to the corresponding reducer. The reducer then
  * updates the state based on the contents of the action.
  *
@@ -20,8 +20,8 @@ import readerReducer from 'src/features/reader/readerSlice'
 // The store is what controls the state of the app
 export const store = configureStore({
   reducer: {
-		paper: paperReducer,
-		reader: readerReducer
+    paper: paperReducer,
+    reader: readerReducer,
   },
 })
 
@@ -29,10 +29,9 @@ export const store = configureStore({
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
 export type AppThunk<ReturnType = void> = ThunkAction<
-    ReturnType,
-    RootState,
-    unknown,
-    Action<string>
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
 >
-
-(window as any).getState = store.getState
+;(window as any).getState = store.getState

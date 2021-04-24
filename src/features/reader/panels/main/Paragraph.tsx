@@ -1,11 +1,11 @@
-import {FunctionComponent} from "react"
-import {useSelector} from "react-redux"
-import {Paragraph as TParagraph, ParagraphRef} from "src/common/types"
-import { paragraphById } from "src/features/paper/paperSlice"
-import ParagraphItem from "./ParagraphItem"
+import { FunctionComponent } from 'react'
+import { useSelector } from 'react-redux'
+import { Paragraph as TParagraph, ParagraphRef } from 'src/common/types'
+import { paragraphById } from 'src/features/paper/paperSlice'
+import ParagraphItem from './ParagraphItem'
 
 interface ParagraphProps {
-	paragraphRef: ParagraphRef
+  paragraphRef: ParagraphRef
 }
 
 /**
@@ -16,17 +16,15 @@ interface ParagraphProps {
  * @returns 								The paragraph's contents which is a series of strings and ResourceRefs
  */
 const Paragraph: FunctionComponent<ParagraphProps> = ({ paragraphRef }) => {
-	const paragraph = useSelector(paragraphById(paragraphRef.id)) as TParagraph
+  const paragraph = useSelector(paragraphById(paragraphRef.id)) as TParagraph
 
-	return (
-		<p>
-			{
-				paragraph.content.map((item, i) => (
-					<ParagraphItem key={i} item={item} />
-				))
-			}
-		</p>
-	)
+  return (
+    <p>
+      {paragraph.content.map((item, i) => (
+        <ParagraphItem key={i} item={item} />
+      ))}
+    </p>
+  )
 }
 
 export default Paragraph

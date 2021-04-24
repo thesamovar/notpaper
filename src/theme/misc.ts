@@ -1,4 +1,4 @@
-import rem from "./rem";
+import rem from './rem'
 
 export const radii = {
   none: '0',
@@ -6,7 +6,7 @@ export const radii = {
   default: rem(0.25),
   md: rem(0.375),
   lg: rem(0.5),
-  full: '9999px'
+  full: '9999px',
 }
 
 export const shadows = {
@@ -21,5 +21,5 @@ export const shadows = {
   '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
   inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   outline: '0 0 0 3px rgba(66, 153, 225, 0.5)',
-  none: 'none'
+  none: 'none',
 }

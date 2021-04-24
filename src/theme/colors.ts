@@ -2,11 +2,14 @@ import { darkenAll } from './util'
 
 const gradients = {
   syze: 'linear-gradient(94.07deg, #0082FF 0%, #0081FD 0.01%, #115291 100.73%)',
-  radial: 'radial-gradient(99.58% 2249.19% at 0.42% 97.85%, #D16BA5 0%, #86A8E7 27.08%, #7BC7C3 80.21%)',
-  linear: 'gradient(248.88deg, #7BC7C3 -13.56%, #7BC7C3 17.1%, #85ABE3 64.08%, #86A8E7 70.5%, #D16BA5 110.03%)',
+  radial:
+    'radial-gradient(99.58% 2249.19% at 0.42% 97.85%, #D16BA5 0%, #86A8E7 27.08%, #7BC7C3 80.21%)',
+  linear:
+    'gradient(248.88deg, #7BC7C3 -13.56%, #7BC7C3 17.1%, #85ABE3 64.08%, #86A8E7 70.5%, #D16BA5 110.03%)',
   linear2: 'linear-gradient(157.73deg, #48C6EF 0%, #6F86D6 100%)',
   lowOpacity: `linear-gradient(157.73deg, rgba(72, 198, 239, 0.35) 0%, rgba(111, 134, 214, 0.35) 100%)`,
-  dark: 'radial-gradient(42.71% 2615.95% at 50% 80.98%, #2A284C 0%, #0F0E17 100%)'
+  dark:
+    'radial-gradient(42.71% 2615.95% at 50% 80.98%, #2A284C 0%, #0F0E17 100%)',
 }
 
 const themeColors = {
@@ -17,7 +20,7 @@ const themeColors = {
   gradient: gradients.syze,
   darkGradient: gradients.dark,
   alert: '#F9812A',
-  success: '#32C671'
+  success: '#32C671',
 }
 
 const baseColors = {
@@ -34,7 +37,7 @@ const baseColors = {
     '#718096',
     '#4a5568',
     '#262626',
-    '#1a202c'
+    '#1a202c',
   ],
   red: [
     '#fff',
@@ -46,7 +49,7 @@ const baseColors = {
     '#e53e3e',
     '#c53030',
     '#9b2c2c',
-    '#742a2a'
+    '#742a2a',
   ],
   orange: [
     '#fff',
@@ -58,7 +61,7 @@ const baseColors = {
     '#dd6b20',
     '#c05621',
     '#9c4221',
-    '#7b341e'
+    '#7b341e',
   ],
   yellow: [
     '#fff',
@@ -70,7 +73,7 @@ const baseColors = {
     '#d69e2e',
     '#b7791f',
     '#975a16',
-    '#744210'
+    '#744210',
   ],
   green: [
     '#fff',
@@ -82,7 +85,7 @@ const baseColors = {
     '#38a169',
     '#2f855a',
     '#276749',
-    '#22543d'
+    '#22543d',
   ],
   teal: [
     '#fff',
@@ -94,7 +97,7 @@ const baseColors = {
     '#319795',
     '#2c7a7b',
     '#285e61',
-    '#234e52'
+    '#234e52',
   ],
   blue: [
     '#fff',
@@ -106,7 +109,7 @@ const baseColors = {
     '#3182ce',
     '#2b6cb0',
     '#2c5282',
-    '#2a4365'
+    '#2a4365',
   ],
   indigo: [
     '#fff',
@@ -118,7 +121,7 @@ const baseColors = {
     '#5a67d8',
     '#4c51bf',
     '#434190',
-    '#3c366b'
+    '#3c366b',
   ],
   purple: [
     '#fff',
@@ -130,7 +133,7 @@ const baseColors = {
     '#805ad5',
     '#6b46c1',
     '#553c9a',
-    '#44337a'
+    '#44337a',
   ],
   pink: [
     '#fff',
@@ -142,8 +145,8 @@ const baseColors = {
     '#d53f8c',
     '#b83280',
     '#97266d',
-    '#702459'
-  ]
+    '#702459',
+  ],
 }
 
 const utilityColors = {
@@ -156,11 +159,11 @@ const utilityColors = {
   success: '#5CCD52',
   info: '#63b3ed',
   warning: '#faf089',
-  danger: '#feb2b2'
+  danger: '#feb2b2',
 }
 
 const brandColors = {
-  discord: '#7289DA'
+  discord: '#7289DA',
 }
 
 const opaque = [
@@ -169,7 +172,7 @@ const opaque = [
   'rgba(0,0,0,0.2)',
   'rgba(0,0,0,0.3)',
   'rgba(0,0,0,0.4)',
-  'rgba(0,0,0,0.5)'
+  'rgba(0,0,0,0.5)',
 ]
 
 const colors = {
@@ -178,7 +181,10 @@ const colors = {
   ...brandColors,
   gradients,
   opaque,
-  darken: darkenAll({primary: themeColors.primary, secondary: themeColors.secondary})
+  darken: darkenAll({
+    primary: themeColors.primary,
+    secondary: themeColors.secondary,
+  }),
 }
 
 export default colors

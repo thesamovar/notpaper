@@ -5,6 +5,6 @@ export default {
   },
   primary: {
     bg: 'primary',
-    color: 'white'
-  }
+    color: 'white',
+  },
 }

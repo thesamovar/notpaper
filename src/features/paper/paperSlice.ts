@@ -12,74 +12,98 @@
  *
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {RootState} from 'src/app/store'
+import { RootState } from 'src/app/store'
 import { AbstractPaper, ResourceKey } from 'src/common/types'
 import apiService from 'src/service/api'
-import {TEST_PAPER} from './testPaper'
+import { TEST_PAPER } from './testPaper'
 
-// State ////////////////////////////////////////
+///////////////////
+//     STATE     //
+///////////////////
 
 export interface PaperListState {
-	activePaperId?: string
+  activePaperId?: string
   papersById: {
     [n: string]: AbstractPaper
-  },
-	loadingById: {
-		[n: string]: boolean
-	},
-	errorById: {
-		[n: string]: boolean | string
-	}
+  }
+  loadingById: {
+    [n: string]: boolean
+  }
+  errorById: {
+    [n: string]: boolean | string
+  }
 }
 
 const initialState: PaperListState = {
-	activePaperId: 'test',
-	papersById: {
-		test: TEST_PAPER
-	},
-	loadingById: {},
-	errorById: {}
+  activePaperId: 'test',
+  papersById: {
+    test: TEST_PAPER,
+  },
+  loadingById: {},
+  errorById: {},
 }
 
-// Thunks ///////////////////////////////////////
+////////////////////
+//     THUNKS     //
+////////////////////
 
-interface uploadPayload { id: string, paper: AbstractPaper }
-interface uploadParams { text: string, source: string}
+interface UploadPayload {
+  id: string
+  paper: AbstractPaper
+}
+
+interface UploadParams {
+  text: string
+  source: string
+}
+
 /**
  * Send a document to the NotPaper API to be parsed
  *
  * @param text: 		The LaTeX document's text as a string
  * @param source: 	The type of document (e.g. latex)
  */
-export const upload = createAsyncThunk('paperList/parseOne', async ({text, source}: uploadParams, { rejectWithValue }) => {
-	const response = await apiService.parse(text, source)
+export const upload = createAsyncThunk(
+  'paperList/parseOne',
+  async ({ text, source }: UploadParams, { rejectWithValue }) => {
+    const response = await apiService.parse(text, source)
 
-	if (!response.paper) {
-		rejectWithValue(`Invalid payload: missing paper`)
-	}
+    if (!response.paper) {
+      rejectWithValue(`Invalid payload: missing paper`)
+    }
 
-	return response as uploadPayload
-})
+    return response as UploadPayload
+  },
+)
 
-
-// Slice ////////////////////////////////////////
+///////////////////
+//     SLICE     //
+///////////////////
 
 export const paperSlice = createSlice({
   name: 'paper',
   initialState,
-	reducers: {
-		selectPaper: (state, action: PayloadAction<string>) => {
-			state.activePaperId = action.payload
-		}
-	},
-	extraReducers: (builder) => {
-		builder.addCase(upload.fulfilled, (state, { payload }) => {
-			state.papersById[payload.id] = payload.paper
-		})
-	}
+  reducers: {
+    selectPaper: (state, action: PayloadAction<string>) => {
+      state.activePaperId = action.payload
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(upload.fulfilled, (state, { payload }) => {
+      state.papersById[payload.id] = payload.paper
+    })
+  },
 })
 
-// Selectors ////////////////////////////////////
+/////////////////////
+//     ACTIONS     //
+/////////////////////
+
+export const { selectPaper } = paperSlice.actions
+
+///////////////////////
+//     SELECTORS     //
+///////////////////////
 
 /**
  * Retrieve a resource in a paper
@@ -90,27 +114,29 @@ export const paperSlice = createSlice({
  *
  * @returns 						A curried function, which can be applied like thingInPaperId()()()
  */
-const thingInPaperById = (paper: AbstractPaper) => (resource: ResourceKey) => (thingId: string) => (
-	paper.resources[resource][thingId]
-)
+const thingInPaperById = (paper: AbstractPaper) => (resource: ResourceKey) => (
+  thingId: string,
+) => paper.resources[resource][thingId]
 
 /**
- * Retrieve a resource in the active paper 
+ * Retrieve a resource in the active paper
  *
  * @param resource 		The kind of resource (e.g. citation)
- * @param thingId 		The ID of the resource 
- * @param state 			The Redux state object 
+ * @param thingId 		The ID of the resource
+ * @param state 			The Redux state object
  *
  * @returns 					A curried function, which can be applied twice and then passed into useSelector
  * 											e.g. useSelector(thingInActivePaperById('citation')('cit1'))
  */
-const thingInActivePaperById = (resource: ResourceKey) => (thingId: string) => (state: RootState) => {
-	const paper = getActivePaper(state)
-	if (!paper) {
-		return undefined
-	}
+const thingInActivePaperById = (resource: ResourceKey) => (thingId: string) => (
+  state: RootState,
+) => {
+  const paper = getActivePaper(state)
+  if (!paper) {
+    return undefined
+  }
 
-	return thingInPaperById(paper)(resource)(thingId)
+  return thingInPaperById(paper)(resource)(thingId)
 }
 
 /**
@@ -118,31 +144,111 @@ const thingInActivePaperById = (resource: ResourceKey) => (thingId: string) => (
  *
  * @param resource 		The kind of resource (e.g. citation)
  * @param thingIds 		The IDs of the resources
- * @param state 			The Redux state object 
+ * @param state 			The Redux state object
  *
  * @returns 					A curried function, which can be applied twice and then passed into useSelector
  * 											e.g. useSelector(thingInActivePaperById('citation')(['cit1', 'cit2']))
  */
-const thingsInActivePaperById = (resource: ResourceKey) => (thingIds: string[]) => (state: RootState) => {
-	const paper = getActivePaper(state)
-	if (!paper) {
-		return undefined
-	}
+const thingsInActivePaperById = (resource: ResourceKey) => (
+  thingIds: string[],
+) => (state: RootState) => {
+  const paper = getActivePaper(state)
+  if (!paper) {
+    return undefined
+  }
 
-	return thingIds.map(id => thingInPaperById(paper)(resource)(id))
+  return thingIds.map((id) => thingInPaperById(paper)(resource)(id))
 }
 
-export const getAllPapers = (state: RootState) => Object.entries(state.paper.papersById)
-export const getAllPaperIds = (state: RootState) => Object.keys(state.paper.papersById)
+/**
+ * Select all loaded papers
+ *
+ * @param state     The root state object
+ */
+export const getAllPapers = (state: RootState) =>
+  Object.entries(state.paper.papersById)
+
+/**
+ * Select the IDs of all loaded papers
+ *
+ * @param state     The root state object
+ */
+export const getAllPaperIds = (state: RootState) =>
+  Object.keys(state.paper.papersById)
+
+/**
+ * Select the active paper's ID
+ *
+ * @param state     The root state object
+ */
 export const getActivePaperId = (state: RootState) => state.paper.activePaperId
-export const getActivePaper = (state: RootState) => (
-	state.paper.activePaperId ? state.paper.papersById[state.paper.activePaperId] : undefined
-)
-export const paperIsLoading = (id: string) => (state: RootState) => state.paper.loadingById[id]
-export const paperHasError = (id: string) => (state: RootState) => state.paper.errorById[id]
-export const paragraphById = (thingId: string) => thingInActivePaperById('paragraph')(thingId)
-export const figureById = (thingId: string) => thingInActivePaperById('figure')(thingId)
-export const citationById = (thingId: string) => thingInActivePaperById('citation')(thingId)
-export const citationsById = (ids: string[]) => thingsInActivePaperById('citation')(ids)
+
+/**
+ * Select the active paper
+ *
+ * @param state     The root state object
+ */
+export const getActivePaper = (state: RootState) =>
+  state.paper.activePaperId
+    ? state.paper.papersById[state.paper.activePaperId]
+    : undefined
+
+/**
+ * Select the loading status of a paper
+ *
+ * @param id        The ID of the paper
+ * @param state     The root state object
+ */
+export const paperIsLoading = (id: string) => (state: RootState) =>
+  state.paper.loadingById[id]
+
+/**
+ * Select the error status of a paper
+ *
+ * @param id        The ID of the paper
+ * @param state     The root state object
+ */
+export const paperHasError = (id: string) => (state: RootState) =>
+  state.paper.errorById[id]
+
+/**
+ * Select a paragraph by ID
+ *
+ * @param thingId   The ID of the paragraph
+ * @param state     The root state object
+ */
+export const paragraphById = (thingId: string) =>
+  thingInActivePaperById('paragraph')(thingId)
+
+/**
+ * Select a figure by ID
+ *
+ * @param thingId   The ID of the paper
+ * @param state     The root state object
+ */
+export const figureById = (thingId: string) =>
+  thingInActivePaperById('figure')(thingId)
+
+/**
+ * Select a citation by ID
+ *
+ * @param thingId   The ID of the citation
+ * @param state     The root state object
+ */
+export const citationById = (thingId: string) =>
+  thingInActivePaperById('citation')(thingId)
+
+/**
+ * Select several citations by ID
+ *
+ * @param ids       An array of citation IDs
+ * @param state     The root state object
+ */
+export const citationsById = (ids: string[]) =>
+  thingsInActivePaperById('citation')(ids)
+
+/////////////////////
+//     REDUCER     //
+/////////////////////
 
 export default paperSlice.reducer
