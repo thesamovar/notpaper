@@ -7,7 +7,7 @@
  * Actions:
  *     selectPaper:     When a paper is selected for reading
  */
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
 import {isRefChain} from 'src/common/util/guards';
 import {RootState} from '../../app/store';

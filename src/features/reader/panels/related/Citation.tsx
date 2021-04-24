@@ -5,7 +5,6 @@ import {Citation as TCitation, CitationRef} from "src/common/types"
 import { citationById } from "src/features/paper/paperSlice"
 import {pinResource, resourceHasHover, resourceIsPinned, toggleHoveredResource} from "../../readerSlice"
 import Pin from "src/common/components/Pin"
-import {Button} from "@theme-ui/components"
 import {FaChevronDown, FaChevronUp} from "react-icons/fa"
 
 

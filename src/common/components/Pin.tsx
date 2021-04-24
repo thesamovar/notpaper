@@ -1,4 +1,4 @@
-import {Box, BoxProps} from "@theme-ui/components"
+import {Box} from "@theme-ui/components"
 import {ThemeUICSSObject} from "@theme-ui/css"
 import {FunctionComponent, useState} from "react"
 import {FaThumbtack} from "react-icons/fa"
