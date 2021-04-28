@@ -26,10 +26,10 @@ interface CitationProps {
  * @returns 								A span containing the short-form of the citation
  */
 const Citation: FunctionComponent<CitationProps> = ({ citationRef }) => {
-  const [componentId] = useState(_.uniqueId('citation-')) // Used to keep track of duplicate citations on-screen
-
-  const ref: any = useRef<HTMLSpanElement>()
   const dispatch = useDispatch()
+  const [componentId] = useState(_.uniqueId('citation-')) // Used to keep track of duplicate citations on-screen
+  const ref: any = useRef<HTMLSpanElement>()
+
   const handleIsVisible = useCallback(
     (isVisible: boolean) => {
       if (isVisible) {
